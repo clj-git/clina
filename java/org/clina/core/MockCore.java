@@ -32,7 +32,7 @@ import java.util.*;
  */
 
 public class MockCore {
-    public static String basepath = "/Users/zjh/.clina";
+    public static String basepath = String.format("%s/.clina", System.getProperty("user.home"));
 
     public static File getRepositoryDir(String owner, String repository) {
         String RepositoryHome = String.format("%s/repositories", basepath);
@@ -46,8 +46,22 @@ public class MockCore {
             (new RepositoryBuilder().setGitDir(gitDir).build()).create(bare);
             //new RepositoryBuilder().setGitDir(gitDir).setBare().build().create();
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            //repository already exists
+            return false;
+        }
+    }
+
+    public static boolean deleteRepository(String owner, String repository) {
+        try {
+            FileUtil.delete(getRepositoryDir(owner, repository));
+            File ownerdir = new File(String.format("%s/repositories/%s", basepath, owner));
+            //如果某一个用户目录下已经没有repo了那么就把用户路径也删除掉
+            if (ownerdir.list().length == 0) {
+                FileUtil.delete(ownerdir);
+            }
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }

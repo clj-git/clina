@@ -9,8 +9,7 @@
   (POST "/new" request
     (let [owner (get-in request [:params :owner])
           repository (get-in request [:params :repository])]
-      (do (init-repo owner repository)
-          (str owner " " repository))))
+      (init-repo owner repository)))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求

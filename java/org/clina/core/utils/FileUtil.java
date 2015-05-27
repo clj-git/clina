@@ -1,5 +1,7 @@
 package org.clina.core.utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -36,6 +38,28 @@ public class FileUtil {
             return "text/plain";
         } else {
             return mimeType;
+        }
+    }
+
+    public static void delete(File file) throws IOException {
+        if (file.isDirectory()) {
+            if (file.list().length == 0) {
+                file.delete();
+                System.out.println("Directory is deleted : " + file.getAbsolutePath());
+            } else {
+                String files[] = file.list();
+                for (String temp : files) {
+                    File fileDelete = new File(file, temp);
+                    delete(fileDelete);
+                }
+                if (file.list().length == 0) {
+                    file.delete();
+                    System.out.println("Directory is deleted : " + file.getAbsolutePath());
+                }
+            }
+        } else {
+            file.delete();
+            System.out.println("File is deleted : " + file.getAbsolutePath());
         }
     }
 }
