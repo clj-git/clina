@@ -1,18 +1,32 @@
 (ns clina.handler
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
+            [cheshire.core :as cheshire]
+            [ring.middleware.json :as middleware]
+            [ring.util.response :refer [response content-type]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
-            [clina.cljgit :refer :all]))
+            [clina.cljgit :refer :all]
+            [clina.view.layout :as layout]))
+
+(defn json [form]
+  (-> form
+      cheshire/encode
+      response
+      (content-type "application/json; charset=utf-8")))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
+  (GET "/new" []
+    (layout/render "newrepo.html" {:title "just have fun"}))
   (POST "/new" request
     (let [owner (get-in request [:params :owner])
           repository (get-in request [:params :repository])]
-      (init-repo owner repository)))
+      (json (init-repo owner repository))))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求
 (def app
-  (wrap-defaults app-routes
-    (assoc-in site-defaults [:security :anti-forgery] false)))
+  (-> app-routes
+      (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))
+      (middleware/wrap-json-body)
+      (middleware/wrap-json-params)))

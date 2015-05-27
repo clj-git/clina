@@ -25,7 +25,7 @@ public class CommitInfo {
     public String description;
     public Boolean isDifferentFromAuthor;
 
-    public void createCommitInfo (String id, String shortMessage, String fullMessage, List<String> parents, Date authorTime, String authorName, String authorEmailAddress, Date commitTime, String committerName, String committerEmailAddress) {
+    public void createCommitInfo(String id, String shortMessage, String fullMessage, List<String> parents, Date authorTime, String authorName, String authorEmailAddress, Date commitTime, String committerName, String committerEmailAddress) {
         this.id = id;
         this.shortMessage = shortMessage;
         this.fullMessage = fullMessage;
