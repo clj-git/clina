@@ -32,7 +32,7 @@ import java.util.*;
  */
 
 public class MockCore {
-    public static String basepath = "~/.clina";
+    public static String basepath = "/Users/zjh/.clina";
 
     public static File getRepositoryDir(String owner, String repository) {
         String RepositoryHome = String.format("%s/repositories", basepath);
