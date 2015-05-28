@@ -1,39 +1,16 @@
 (ns clina.handler
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
-            [cheshire.core :as cheshire]
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [response content-type]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [clina.view.layout :as layout]
+            [clina.util.jsonutil :refer :all]
             [clina.cljgit :refer :all]
-            [clina.gitcore :refer :all]
-            [clina.view.layout :as layout]))
-
-(defn json [form]
-  (-> form
-      cheshire/encode
-      response
-      (content-type "application/json; charset=utf-8")))
-
-(defn view-repo
-  [request]
-  (let [repoinfo (vec (map #(get-in request [:params %]) [:owner :repository]))
-        commitcount (apply with-repo-object (conj repoinfo get-repo-commit-count))]
-    (if (zero? commitcount)
-      (layout/render "emptyrepo")
-      (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches))
-            tags (apply with-repo-object (conj repoinfo get-repo-tags))
-            revision (get-in request [:params :revision])
-            result (list-file request)]
-        (let [revs (if (or (contains? (set branchs) revision) (nil? revision))
-                     branchs
-                     (map :name tags))]
-          (layout/render "viewrepo" (assoc result
-                                      :revs revs
-                                      :tagcount (count tags))))))))
+            [clina.controller.view-repository-controller :refer :all]))
 
 (defroutes app-routes
-  (GET "/" [] "Hello World")
+  (GET "/" [] "Hello Clina")
   (GET "/new" []
     (layout/render "newrepo" {:title "just have fun"}))
   (POST "/new" request
@@ -49,6 +26,9 @@
   (GET "/:owner/:repository/tree/:revision/*"
        request
     (view-repo request))
+  (GET "/:owner/:repository/tags"
+       request
+    (view-repo-tags request))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求

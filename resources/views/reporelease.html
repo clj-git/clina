@@ -5,10 +5,10 @@
     <title></title>
 </head>
 <body>
-    <ul>
-        {% for tag in tags %}
-            <a href="/{{currentowner}}/{{currentrepo}}/tree/{{tag.name}}">{{tag.name}}</a>
-        {% endfor %}
-    </ul>
+<ul>
+    {% for tag in tags %}
+    <li><a href="/{{currentowner}}/{{currentrepo}}/tree/{{tag.name}}">{{tag.name}}</a></li>
+    {% endfor %}
+</ul>
 </body>
 </html>
