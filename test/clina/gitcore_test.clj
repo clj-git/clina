@@ -1,6 +1,6 @@
 (ns clina.gitcore-test
   (:require [clojure.test :refer :all]
-            [clina.cljgit :refer :all]))
+            [clina.util.git.cljgit :refer :all]))
 
 (deftest test-git
   (testing "create bare repo"

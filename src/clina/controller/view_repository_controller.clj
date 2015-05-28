@@ -1,6 +1,6 @@
 (ns clina.controller.view-repository-controller
-  (:require [clina.cljgit :refer :all]
-            [clina.gitcore :refer :all]
+  (:require [clina.util.git.cljgit :refer :all]
+            [clina.util.git.gitcore :refer :all]
             [clina.view.layout :as layout]
             [clina.util.serviceutil :refer :all]))
 

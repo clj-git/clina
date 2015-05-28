@@ -1,4 +1,4 @@
-(ns clina.cljgit
+(ns clina.util.git.cljgit
   (:require [clina.util.timeutil :refer :all])
   (:import (org.clina.core MockCore)))
 

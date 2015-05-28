@@ -6,7 +6,7 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [clina.view.layout :as layout]
             [clina.util.serviceutil :refer :all]
-            [clina.cljgit :refer :all]
+            [clina.util.git.cljgit :refer :all]
             [clina.controller.view-repository-controller :refer :all]))
 
 (defroutes app-routes

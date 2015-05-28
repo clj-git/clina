@@ -1,4 +1,4 @@
-(ns clina.gitcore
+(ns clina.util.git.gitcore
   (:require [clina.models :refer :all])
   (:import (org.eclipse.jgit.api Git LogCommand)
            (org.eclipse.jgit.lib RepositoryBuilder Repository ObjectId Ref PersonIdent)
