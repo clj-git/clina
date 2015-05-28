@@ -25,6 +25,12 @@
    (let [last-modified-commit (MockCore/getLastModifiedCommit owner repository revision path)
          parent-paths (into [] (java.util.ArrayList. (MockCore/getParentPaths path)))
          files (into [] (java.util.ArrayList. (MockCore/getRepoFiles owner repository revision path)))]
-     {:last-modified-commit last-modified-commit
-      :parent-paths parent-paths
-      :files files})))
+     {:last-modified-commit {:hash   (-> last-modified-commit (.getName))
+                             :time   (-> last-modified-commit (.getCommitTime))
+                             :author (-> last-modified-commit (.getAuthorIdent) (.getName))}
+      :parent-paths         parent-paths
+      :files                (map (fn [file]
+                                   {:name    (.-name file)
+                                    :message (.-message file)
+                                    :author  (.-author file)}) files)})))
+
