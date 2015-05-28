@@ -13,7 +13,6 @@
   [owner repository]
   (let [repo-home (str basepath "/repositories")
         repo-dir (str (join "/" [repo-home owner repository]) ".git")]
-    (println repo-dir)
     (let [bare-repo (-> repo-dir
                         (java.io.File.))]
       bare-repo)))
@@ -23,14 +22,18 @@
   (let [repo-dir (get-repo-dir owner repository)]
     (Git/open repo-dir)))
 
+(defn with-repo-object
+  [owner repository repo-operation]
+  (let [git (get-repo-obj owner repository)]
+    (repo-operation git)))
+
 ;;在项目主页上显示提交次数
 (defn get-repo-commit-count
-  [owner repository]
-  (let [git (get-repo-obj owner repository)]
-    (try
-      (let [commitlist (iterator-seq (-> git (.log) (.all) (.call) (.iterator)))]
-        (count commitlist))
-      (catch NoHeadException e 0))))
+  [^Git git]
+  (try
+    (let [commitlist (iterator-seq (-> git (.log) (.all) (.call) (.iterator)))]
+      (count commitlist))
+    (catch NoHeadException e 0)))
 
 ;;在项目主页上可以用select选择不同的branch
 (defn get-repo-branches

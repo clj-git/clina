@@ -6,7 +6,25 @@
 </head>
 <body>
 
-<h3>{{last-modified-commit}}</h3>
+<h3>{{last-modified-commit.author}} authored {{last-modified-commit.interval}} days ago</h3>
+
+<h3>latest commit {{last-modified-commit.hash}}</h3>
+
+<select>
+    {% for branch in branchs %}
+        {% ifequal branch "master" %}
+            <option selected="selected" value ="{{branch}}">{{branch}}</option>
+        {% else %}
+            <option value ="{{branch}}">{{branch}}</option>
+        {% endifequal %}
+    {% endfor %}
+</select>
+
+<select>
+    {% for tag in tags %}
+        <option value ="{{tag}}">{{tag}}</option>
+    {% endfor %}
+</select>
 
 <ul>
     {% for path in parent-paths %}

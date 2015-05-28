@@ -17,11 +17,15 @@
 
 (defn view-repo
   [request]
-  (let [repoinfo (map #(get-in request [:params %]) [:owner :repository])
-        commitcount (apply get-repo-commit-count repoinfo)]
+  (let [repoinfo (vec (map #(get-in request [:params %]) [:owner :repository]))
+        commitcount (apply with-repo-object (conj repoinfo get-repo-commit-count))]
     (if (zero? commitcount)
       (layout/render "emptyrepo")
-      (layout/render "viewrepo" (list-file request)))))
+      (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches))
+            tags (apply with-repo-object (conj repoinfo get-repo-tags))]
+        (layout/render "viewrepo" (assoc (list-file request)
+                                    :branchs branchs
+                                    :tags (map :name tags)))))))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
