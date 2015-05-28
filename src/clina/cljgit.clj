@@ -18,8 +18,8 @@
                       (get-in request [:params inner])) [:owner :repository :revision :*]))]
      (apply list-file params)))
   ([owner repository]
-    (list-file owner repository "master" "."))
+   (list-file owner repository "master" "."))
   ([owner repository revision]
-    (list-file owner repository revision "."))
+   (list-file owner repository revision "."))
   ([owner repository revision path]
-    (MockCore/viewRepoWithRevAndPath owner repository revision path)))
+   (MockCore/viewRepoWithRevAndPath owner repository revision path)))
