@@ -20,16 +20,16 @@
   (context "/:owner/:repository" []
     (GET "/"
          request
-      (repo-viewer request view-repo "view-repo"))
+      (repo-viewer request view-repo))
     (GET "/tree/:revision"
          request
-      (repo-viewer request view-repo "view-repo"))
+      (repo-viewer request view-repo))
     (GET "/tree/:revision/*"
          request
-      (repo-viewer request view-repo "view-repo"))
+      (repo-viewer request view-repo))
     (GET "/tags"
          request
-      (repo-viewer request view-repo-tags "view-repo-tags")))
+      (repo-viewer request view-repo-tags)))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求

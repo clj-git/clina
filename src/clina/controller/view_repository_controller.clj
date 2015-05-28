@@ -5,12 +5,13 @@
             [clina.util.serviceutil :refer :all]))
 
 (defn repo-viewer
-  [request fn pagename]
+  [request fn]
   (let [repoinfomap (reduce
                       #(assoc %1 %2 (get-in request [:params %2])) {} [:owner :repository])
         repoinfo (vec (map #(get-in request [:params %]) [:owner :repository]))
         commitcount (apply with-repo-object (conj repoinfo get-repo-commit-count))
-        result (fn request repoinfo)]
+        result (fn request repoinfo)
+        pagename (get-fn-name fn)]
     (if (zero? commitcount)
       (layout/render "emptyrepo")
       (layout/render pagename

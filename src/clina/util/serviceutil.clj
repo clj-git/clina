@@ -1,5 +1,6 @@
 (ns clina.util.serviceutil
   (:require [cheshire.core :as cheshire]
+            [clojure.string :as str]
             [ring.util.response :refer [response content-type]]))
 
 (defn json [form]
@@ -11,3 +12,7 @@
 (defmacro fn-name
   [f]
   `(-> ~f var meta :name str))
+
+(defn get-fn-name
+  [fn]
+  (nth (str/split (str (type fn)) #"\$") 1))
