@@ -6,6 +6,7 @@
             [ring.util.response :refer [response content-type]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [clina.cljgit :refer :all]
+            [clina.gitcore :refer :all]
             [clina.view.layout :as layout]))
 
 (defn json [form]
@@ -13,6 +14,14 @@
       cheshire/encode
       response
       (content-type "application/json; charset=utf-8")))
+
+(defn view-repo
+  [request]
+  (let [repoinfo (map #(get-in request [:params %]) [:owner :repository])
+        commitcount (apply get-repo-commit-count repoinfo)]
+    (if (zero? commitcount)
+      (layout/render "emptyrepo")
+      (layout/render "viewrepo" (list-file request)))))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
@@ -24,13 +33,13 @@
       (json (init-repo owner repository))))
   (GET "/:owner/:repository"
        request
-    (layout/render "viewrepo" (list-file request)))
+    (view-repo request))
   (GET "/:owner/:repository/tree/:revision"
        request
-    (layout/render "viewrepo" (list-file request)))
+    (view-repo request))
   (GET "/:owner/:repository/tree/:revision/*"
        request
-    (layout/render "viewrepo" (list-file request)))
+    (view-repo request))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求

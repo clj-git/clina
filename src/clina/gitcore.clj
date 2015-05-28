@@ -25,11 +25,12 @@
 
 ;;在项目主页上显示提交次数
 (defn get-repo-commit-count
-  [^Git git]
-  (try
-    (let [commitlist (iterator-seq (-> git (.log) (.all) (.call) (.iterator)))]
-      (count commitlist))
-    (catch NoHeadException e 0)))
+  [owner repository]
+  (let [git (get-repo-obj owner repository)]
+    (try
+      (let [commitlist (iterator-seq (-> git (.log) (.all) (.call) (.iterator)))]
+        (count commitlist))
+      (catch NoHeadException e 0))))
 
 ;;在项目主页上可以用select选择不同的branch
 (defn get-repo-branches

@@ -266,7 +266,8 @@ public class MockCore {
     }
 
     public static List<String> getParentPaths(String path) {
-        List<String> parentPaths = null;
+        //to avoid null pointer exception
+        List<String> parentPaths = new ArrayList<String>();
         if (!path.equals(".")) {
             parentPaths = Arrays.asList(path.split("/"));
         }
