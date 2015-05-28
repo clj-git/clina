@@ -265,6 +265,43 @@ public class MockCore {
         return fileInfoList;
     }
 
+    public static List<String> getParentPaths(String path) {
+        List<String> parentPaths = null;
+        if (!path.equals(".")) {
+            parentPaths = Arrays.asList(path.split("/"));
+        }
+        return parentPaths;
+    }
+
+    public static RevCommit getLastModifiedCommit(String owner, String repository, String revstr, String path) {
+        try {
+            Git git = Git.open(getRepositoryDir(owner, repository));
+            ObjectId objectId = git.getRepository().resolve(revstr);
+            RevCommit lastModifiedCommit;
+            RevCommit commit = getRevCommitFromId(git, objectId);
+            if (path.equals(".")) {
+                lastModifiedCommit = commit;
+            } else {
+                lastModifiedCommit = getLastModifiedCommit(git, commit, path);
+            }
+            return lastModifiedCommit;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<FileInfo> getRepoFiles(String owner, String repository, String revstr, String path) {
+        try {
+            Git git = Git.open(getRepositoryDir(owner, repository));
+            ObjectId objectId = git.getRepository().resolve(revstr);
+            return getFileList(git, revstr, path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * @param gitDir
      * @param revstr branch name or commitid
@@ -275,9 +312,7 @@ public class MockCore {
         try {
             Git git = Git.open(gitDir);
 
-            String branch = revstr;
-
-            ObjectId objectId = git.getRepository().resolve(branch);
+            ObjectId objectId = git.getRepository().resolve(revstr);
 
             RevCommit lastModifiedCommit;
             RevCommit commit = getRevCommitFromId(git, objectId);
@@ -292,7 +327,7 @@ public class MockCore {
                 System.out.println(String.format("last commit info -> %s %s", lastModifiedCommit.getName(), lastModifiedCommit.getFullMessage()));
             }
 
-            List<FileInfo> files = getFileList(git, branch, path);
+            List<FileInfo> files = getFileList(git, revstr, path);
 
             List<String> parentPaths = null;
             if (!path.equals(".")) {

@@ -22,4 +22,9 @@
   ([owner repository revision]
    (list-file owner repository revision "."))
   ([owner repository revision path]
-   (MockCore/viewRepoWithRevAndPath owner repository revision path)))
+   (let [last-modified-commit (MockCore/getLastModifiedCommit owner repository revision path)
+         parent-paths (into [] (java.util.ArrayList. (MockCore/getParentPaths path)))
+         files (into [] (java.util.ArrayList. (MockCore/getRepoFiles owner repository revision path)))]
+     {:last-modified-commit last-modified-commit
+      :parent-paths parent-paths
+      :files files})))

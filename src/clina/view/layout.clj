@@ -26,4 +26,4 @@
       "text/html; charset=utf-8")))
 
 (defn render [template & [params]]
-  (RenderableTemplate. template params))
+  (RenderableTemplate. (str template ".html") params))

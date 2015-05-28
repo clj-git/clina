@@ -17,20 +17,20 @@
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (GET "/new" []
-    (layout/render "newrepo.html" {:title "just have fun"}))
+    (layout/render "newrepo" {:title "just have fun"}))
   (POST "/new" request
     (let [owner (get-in request [:params :owner])
           repository (get-in request [:params :repository])]
       (json (init-repo owner repository))))
   (GET "/:owner/:repository"
        request
-    (list-file request))
+    (layout/render "viewrepo" (list-file request)))
   (GET "/:owner/:repository/tree/:revision"
        request
-    (list-file request))
+    (layout/render "viewrepo" (list-file request)))
   (GET "/:owner/:repository/tree/:revision/*"
        request
-    (list-file request))
+    (layout/render "viewrepo" (list-file request)))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求
