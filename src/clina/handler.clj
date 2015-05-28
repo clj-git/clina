@@ -25,11 +25,12 @@
             tags (apply with-repo-object (conj repoinfo get-repo-tags))
             revision (get-in request [:params :revision])
             result (list-file request)]
-        (if (or (contains? (set branchs) revision) (nil? revision))
+        (let [revs (if (or (contains? (set branchs) revision) (nil? revision))
+                     branchs
+                     (map :name tags))]
           (layout/render "viewrepo" (assoc result
-                                      :branchs branchs))
-          (layout/render "reporelease" (assoc result
-                                         :tags tags)))))))
+                                      :revs revs
+                                      :tagcount (count tags))))))))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")

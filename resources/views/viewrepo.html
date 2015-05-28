@@ -11,11 +11,11 @@
 <h3>latest commit {{last-modified-commit.hash}}</h3>
 
 <select onChange="window.location.href=this.value">
-    {% for branch in branchs %}
-        {% ifequal branch currentrevision %}
-            <option selected="selected" value ="/{{currentowner}}/{{currentrepo}}/tree/{{branch}}">{{branch}}</option>
+    {% for rev in revs %}
+        {% ifequal rev currentrevision %}
+            <option selected="selected" value ="/{{currentowner}}/{{currentrepo}}/tree/{{rev}}">{{rev}}</option>
         {% else %}
-            <option value ="/{{currentowner}}/{{currentrepo}}/tree/{{branch}}">{{branch}}</option>
+            <option value ="/{{currentowner}}/{{currentrepo}}/tree/{{rev}}">{{rev}}</option>
         {% endifequal %}
     {% endfor %}
 </select>
