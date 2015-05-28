@@ -7,7 +7,7 @@
 <body>
 <ul>
     {% for tag in tags %}
-    <li><a href="/{{currentowner}}/{{currentrepo}}/tree/{{tag.name}}">{{tag.name}}</a></li>
+    <li><a href="/{{owner}}/{{repository}}/tree/{{tag.name}}">{{tag.name}}</a></li>
     {% endfor %}
 </ul>
 </body>

@@ -36,8 +36,6 @@
                                     :author   (.-author file)
                                     :interval (get-time-interval
                                                 (get-unix-timestamp (.time file)))}) files)
-      :currentowner         owner
-      :currentrepo          repository
       :currentrevision      (if (nil? revision)
                               "master"
                               revision)})))

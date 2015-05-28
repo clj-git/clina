@@ -5,7 +5,7 @@
             [ring.util.response :refer [response content-type]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [clina.view.layout :as layout]
-            [clina.util.jsonutil :refer :all]
+            [clina.util.serviceutil :refer :all]
             [clina.cljgit :refer :all]
             [clina.controller.view-repository-controller :refer :all]))
 
@@ -19,16 +19,16 @@
       (json (init-repo owner repository))))
   (GET "/:owner/:repository"
        request
-    (view-repo request))
+    (repo-viewer request view-repo "view-repo"))
   (GET "/:owner/:repository/tree/:revision"
        request
-    (view-repo request))
+    (repo-viewer request view-repo "view-repo"))
   (GET "/:owner/:repository/tree/:revision/*"
        request
-    (view-repo request))
+    (repo-viewer request view-repo "view-repo"))
   (GET "/:owner/:repository/tags"
        request
-    (view-repo-tags request))
+    (repo-viewer request view-repo-tags "view-repo-tags"))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求

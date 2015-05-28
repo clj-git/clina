@@ -13,9 +13,9 @@
 <select onChange="window.location.href=this.value">
     {% for rev in revs %}
         {% ifequal rev currentrevision %}
-            <option selected="selected" value ="/{{currentowner}}/{{currentrepo}}/tree/{{rev}}">{{rev}}</option>
+            <option selected="selected" value ="/{{owner}}/{{repository}}/tree/{{rev}}">{{rev}}</option>
         {% else %}
-            <option value ="/{{currentowner}}/{{currentrepo}}/tree/{{rev}}">{{rev}}</option>
+            <option value ="/{{owner}}/{{repository}}/tree/{{rev}}">{{rev}}</option>
         {% endifequal %}
     {% endfor %}
 </select>
