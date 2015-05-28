@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <ul>
+        {% for tag in tags %}
+            <a href="/{{currentowner}}/{{currentrepo}}/tree/{{tag.name}}">{{tag.name}}</a>
+        {% endfor %}
+    </ul>
+</body>
+</html>

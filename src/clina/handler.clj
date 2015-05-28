@@ -22,10 +22,14 @@
     (if (zero? commitcount)
       (layout/render "emptyrepo")
       (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches))
-            tags (apply with-repo-object (conj repoinfo get-repo-tags))]
-        (layout/render "viewrepo" (assoc (list-file request)
-                                    :branchs branchs
-                                    :tags (map :name tags)))))))
+            tags (apply with-repo-object (conj repoinfo get-repo-tags))
+            revision (get-in request [:params :revision])
+            result (list-file request)]
+        (if (or (contains? (set branchs) revision) (nil? revision))
+          (layout/render "viewrepo" (assoc result
+                                      :branchs branchs))
+          (layout/render "reporelease" (assoc result
+                                         :tags tags)))))))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
