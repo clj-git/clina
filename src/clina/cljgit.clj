@@ -31,7 +31,8 @@
                              :author   (-> last-modified-commit (.getAuthorIdent) (.getName))}
       :parent-paths         parent-paths
       :files                (map (fn [file]
-                                   {:name    (.-name file)
-                                    :message (.-message file)
-                                    :author  (.-author file)}) files)})))
-
+                                   {:name     (.-name file)
+                                    :message  (.-message file)
+                                    :author   (.-author file)
+                                    :interval (get-time-interval
+                                                (get-unix-timestamp (.time file)))}) files)})))
