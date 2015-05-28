@@ -17,18 +17,19 @@
     (let [owner (get-in request [:params :owner])
           repository (get-in request [:params :repository])]
       (json (init-repo owner repository))))
-  (GET "/:owner/:repository"
-       request
-    (repo-viewer request view-repo "view-repo"))
-  (GET "/:owner/:repository/tree/:revision"
-       request
-    (repo-viewer request view-repo "view-repo"))
-  (GET "/:owner/:repository/tree/:revision/*"
-       request
-    (repo-viewer request view-repo "view-repo"))
-  (GET "/:owner/:repository/tags"
-       request
-    (repo-viewer request view-repo-tags "view-repo-tags"))
+  (context "/:owner/:repository" []
+    (GET "/"
+         request
+      (repo-viewer request view-repo "view-repo"))
+    (GET "/tree/:revision"
+         request
+      (repo-viewer request view-repo "view-repo"))
+    (GET "/tree/:revision/*"
+         request
+      (repo-viewer request view-repo "view-repo"))
+    (GET "/tags"
+         request
+      (repo-viewer request view-repo-tags "view-repo-tags")))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求
