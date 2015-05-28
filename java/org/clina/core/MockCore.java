@@ -32,7 +32,7 @@ import java.util.*;
  */
 
 public class MockCore {
-    public static String basepath = String.format("%s/.clina", System.getProperty("user.home"));
+    public static String basepath = String.format("%s/.gitbucket", System.getProperty("user.home"));
 
     public static File getRepositoryDir(String owner, String repository) {
         String RepositoryHome = String.format("%s/repositories", basepath);
@@ -275,10 +275,7 @@ public class MockCore {
         try {
             Git git = Git.open(gitDir);
 
-            String branch = "master";
-            if (!revstr.equals("")) {
-                branch = revstr;
-            }
+            String branch = revstr;
 
             ObjectId objectId = git.getRepository().resolve(branch);
 
@@ -506,9 +503,10 @@ public class MockCore {
     }
 
     //根据分支和路径获取文件列表啥的
-    public static void viewRepoWithBranchAndPath() {
-        fileList(getRepositoryDir("root", "hehehe"), "jihui_dev", "hehe");
-        fileList(getRepositoryDir("root", "hehehe"), "jihui_dev", ".");
+    //rev -> branch or tag name
+    //path -> just the project tree path
+    public static void viewRepoWithRevAndPath(String owner, String repository, String revstr, String path) {
+        fileList(getRepositoryDir(owner, repository), revstr, path);
     }
 
     public static void getRepositoryInfo(String owner, String repository) {

@@ -22,6 +22,15 @@
     (let [owner (get-in request [:params :owner])
           repository (get-in request [:params :repository])]
       (json (init-repo owner repository))))
+  (GET "/:owner/:repository"
+       request
+    (list-file request))
+  (GET "/:owner/:repository/tree/:revision"
+       request
+    (list-file request))
+  (GET "/:owner/:repository/tree/:revision/*"
+       request
+    (list-file request))
   (route/not-found "Not Found"))
 
 ;;暂时先去除csrf保护可以用调试工具调试post请求

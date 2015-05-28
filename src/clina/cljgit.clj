@@ -9,3 +9,17 @@
   [owner repository]
   (MockCore/initBareRepo owner repository))
 
+;;revision -> branch or tag name
+(defn list-file
+  ([request]
+   (let [params (filter identity
+                  (map
+                    (fn [inner]
+                      (get-in request [:params inner])) [:owner :repository :revision :*]))]
+     (apply list-file params)))
+  ([owner repository]
+    (list-file owner repository "master" "."))
+  ([owner repository revision]
+    (list-file owner repository revision "."))
+  ([owner repository revision path]
+    (MockCore/viewRepoWithRevAndPath owner repository revision path)))
