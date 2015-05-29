@@ -8,7 +8,7 @@
 <h1>Branches</h1>
 
 <ul>
-    {% for branch in branchs %}
+    {% for branch in branches %}
     <li><a href="/{{owner}}/{{repository}}/tree/{{branch.name}}">{{branch.name}} --- updated {{branch.interval}} by [{{branch.authorname}}]</a></li>
     {% endfor %}
 </ul>

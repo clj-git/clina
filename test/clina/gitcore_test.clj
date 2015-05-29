@@ -22,7 +22,7 @@
       (doall
         (map println commits)))))
 
-(deftest repo-branchs
-  (testing "get repo branchs with info"
-    (let [branchs (apply with-repo-object (conj ["root" "hehehe"] get-repo-branches-withinfo))]
-      (println branchs))))
+(deftest repo-branches
+  (testing "get repo branches with info"
+    (let [branches (apply with-repo-object (conj ["root" "hehehe"] get-repo-branches-withinfo))]
+      (println branches))))
