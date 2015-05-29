@@ -19,10 +19,9 @@
            (fn [params key]
              (assoc params key (get-in request [:params key]))) {} keys)
          params-withdefault (merge-with #(if (nil? %1) %2 %1) params {:revision "master" :page "1" :* "."})]
-     (do (println params-withdefault)
-         (apply list-commits (map (fn [key] (key params-withdefault)) keys)))))
+     (apply list-commits (map (fn [key] (key params-withdefault)) keys))))
   ([owner repository revision page path]
-   (let [commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision (Integer/parseInt page) path))]
+   (let [commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision (Integer/parseInt page) (if (= path ".") path (str path "/"))))]
      (reduce
        (fn [commitlist commit]
          (conj commitlist {:commitmsg  (.-summary commit)

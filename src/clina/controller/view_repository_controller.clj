@@ -4,6 +4,19 @@
             [clina.view.layout :as layout]
             [clina.util.serviceutil :refer :all]))
 
+(defn with-branchs-tags
+  [request repoinfo]
+  (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches))
+        tags (apply with-repo-object (conj repoinfo get-repo-tags))
+        revision (get-in request [:params :revision])
+        revs (if (or (contains? (set branchs) revision) (nil? revision))
+               branchs
+               (map :name tags))]
+    {:branchs branchs
+     :tags tags
+     :revs revs
+     :revision revision}))
+
 (defn repo-viewer
   [request fn]
   (let [repoinfomap (reduce
@@ -18,18 +31,6 @@
       (layout/render pagename
                      (merge result repoinfomap)))))
 
-(defn with-branchs-tags
-  [request repoinfo]
-  (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches))
-        tags (apply with-repo-object (conj repoinfo get-repo-tags))
-        revision (get-in request [:params :revision])
-        revs (if (or (contains? (set branchs) revision) (nil? revision))
-               branchs
-               (map :name tags))]
-    {:branchs branchs
-     :tags tags
-     :revs revs}))
-
 (defn view-repo
   [request btinfo]
   (let [result (list-file request)]
@@ -41,7 +42,8 @@
   [request btinfo]
   (let [commits (list-commits request)]
     {:commits commits
-     :revs (:revs btinfo)}))
+     :revs (:revs btinfo)
+     :currentrevision (:revision btinfo)}))
 
 (defn view-repo-tags
   [request btinfo]

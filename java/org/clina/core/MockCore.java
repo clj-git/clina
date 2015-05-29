@@ -545,7 +545,7 @@ public class MockCore {
             if (infos != null && infos.size() > 0) {
                 return infos;
             } else {
-                System.out.println("notfound");
+                System.out.println("no commits found");
                 return new ArrayList<CommitInfo>();
             }
         } catch (IOException e) {

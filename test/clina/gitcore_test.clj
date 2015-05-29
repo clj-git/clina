@@ -13,10 +13,10 @@
 
 (deftest repo-commits
   (testing "get repo commits with"
-    (let [commits (list-commits "root" "hehehe" "jihui_dev" 3 ".")]
+    (let [commits (list-commits "root" "hehehe" "jihui_dev" "3" ".")]
       (doall
         (map println commits))))
   (testing "get repo commits with path"
-    (let [commits (list-commits "root" "hehehe" "jihui_dev" 1 "hehe/")]
+    (let [commits (list-commits "root" "hehehe" "jihui_dev" "1" "hehe")]
       (doall
         (map println commits)))))

@@ -6,8 +6,18 @@
 </head>
 <body>
 <ul>
+    <select onChange="window.location.href=this.value">
+        {% for rev in revs %}
+        {% ifequal rev currentrevision %}
+        <option selected="selected" value ="/{{owner}}/{{repository}}/commits/{{rev}}">{{rev}}</option>
+        {% else %}
+        <option value ="/{{owner}}/{{repository}}/commits/{{rev}}">{{rev}}</option>
+        {% endifequal %}
+        {% endfor %}
+    </select>
+
     {% for commit in commits %}
-    <li>{{commit.commitmsg}}</li>
+    <li>{{commit.commitmsg}} --- [{{commit.author}}] authored {{commit.interval}} --- {{commit.commithash}}</li>
     {% endfor %}
 </ul>
 </body>
