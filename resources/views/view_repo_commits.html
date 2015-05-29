@@ -20,5 +20,8 @@
     <li>{{commit.commitmsg}} --- [{{commit.author}}] authored {{commit.interval}} --- {{commit.commithash}}</li>
     {% endfor %}
 </ul>
+
+<a href="/{{owner}}/{{repository}}/commits/{{revision}}?page={{prev}}">newer</a>
+<a href="/{{owner}}/{{repository}}/commits/{{revision}}?page={{next}}">older</a>
 </body>
 </html>

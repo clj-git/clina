@@ -43,14 +43,14 @@
                          :commitcount commitcount))))))
 
 (defn view-repo
-  [request btinfo]
-  (let [result (list-file request)]
-    result))
+  [request info]
+  (let [files (list-file request)]
+    files))
 
 (defn view-repo-commits
   [request info]
   (let [commits (list-commits request)]
-    {:commits commits}))
+    commits))
 
 (defn view-repo-branches
   [request info])

@@ -21,13 +21,16 @@
          params-withdefault (merge-with #(if (nil? %1) %2 %1) params {:revision "master" :page "1" :* "."})]
      (apply list-commits (map (fn [key] (key params-withdefault)) keys))))
   ([owner repository revision page path]
-   (let [commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision (Integer/parseInt page) (if (= path ".") path (str path "/"))))]
-     (reduce
-       (fn [commitlist commit]
-         (conj commitlist {:commitmsg  (.-summary commit)
-                           :author     (.-authorName commit)
-                           :commithash (.-id commit)
-                           :interval   (get-time-interval (get-unix-timestamp (.-commitTime commit)))})) [] commits))))
+   (let [intpage (Integer/parseInt page)
+         commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision intpage (if (= path ".") path (str path "/"))))]
+     {:commits (reduce
+                 (fn [commitlist commit]
+                   (conj commitlist {:commitmsg  (.-summary commit)
+                                     :author     (.-authorName commit)
+                                     :commithash (.-id commit)
+                                     :interval   (get-time-interval (get-unix-timestamp (.-commitTime commit)))})) [] commits)
+      :prev (dec intpage)
+      :next (inc intpage)})))
 
 ;;revision -> branch or tag name
 (defn list-file
