@@ -30,6 +30,12 @@
         :revs revs
         :tagcount (count tags)))))
 
+(comment
+  (defn view-repo-commits
+    [request repoinfo]
+    (let [commits (list-commits)]
+      {:commits commits})))
+
 (defn view-repo-tags
   [request repoinfo]
   (let [tags (apply with-repo-object (conj repoinfo get-repo-tags))]

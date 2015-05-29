@@ -3,7 +3,6 @@ package org.clina.core;
 import org.clina.core.models.CommitInfo;
 import org.clina.core.models.DiffInfo;
 import org.clina.core.models.FileInfo;
-import org.clina.core.models.TagInfo;
 import org.clina.core.utils.FileUtil;
 import org.clina.core.utils.StringUtil;
 import org.eclipse.jgit.api.Git;
@@ -506,7 +505,7 @@ public class MockCore {
                 return null;
             } else {
                 revWalk.markStart(revWalk.parseCommit(objectId));
-                if (!path.equals("")) {
+                if (!path.equals(".")) {
                     revWalk.setRevFilter(new RevFilter() {
                         @Override
                         public boolean include(RevWalk revWalk, RevCommit revCommit) throws StopWalkException, MissingObjectException, IncorrectObjectTypeException, IOException {
@@ -538,51 +537,24 @@ public class MockCore {
         return initRepository(getRepositoryDir(owner, repository), true);
     }
 
-    //根据分支和路径获取文件列表啥的
-    //rev -> branch or tag name
-    //path -> just the project tree path
-    public static void viewRepoWithRevAndPath(String owner, String repository, String revstr, String path) {
-        fileList(getRepositoryDir(owner, repository), revstr, path);
-    }
-
-    public static void getRepositoryInfo(String owner, String repository) {
+    public static List<CommitInfo> viewRepoWithCommits(String owner, String repository, String revision, int page, String repopath) {
         try {
             Git git = Git.open(getRepositoryDir(owner, repository));
-
-            //commits
-            Iterator<RevCommit> commitIter = git.log().all().call().iterator();
-            List<RevCommit> commitList = new ArrayList<RevCommit>();
-            while (commitIter.hasNext()) {
-                RevCommit commit = commitIter.next();
-                System.out.println(commit.getFullMessage());
-                commitList.add(commit);
+            Tuple<List<CommitInfo>, Boolean> commitLog = getCommitLog(git, revision, page, 30, repopath);
+            List<CommitInfo> infos = commitLog.left;
+            if (infos != null && infos.size() > 0) {
+                return infos;
+            } else {
+                System.out.println("notfound");
+                return new ArrayList<CommitInfo>();
             }
-            System.out.println(commitList.size());
-
-            //branchs
-            List<String> branchList = new ArrayList<String>();
-            for (Ref ref : git.branchList().call()) {
-                String branchname = ref.getName().replace("refs/heads/", "");
-                System.out.println(branchname);
-                branchList.add(branchname);
-            }
-            System.out.println(branchList.size());
-
-            List<TagInfo> tagList = new ArrayList<TagInfo>();
-            for (Ref ref : git.tagList().call()) {
-                RevCommit revCommit = getRevCommitFromId(git, ref.getObjectId());
-                //id name 这些东西 其实都是commit hash
-                TagInfo info = new TagInfo(ref.getName().replace("refs/tags/", ""), revCommit.getCommitterIdent().getWhen(), revCommit.getName());
-                System.out.println("taginfo -> " + info);
-                tagList.add(info);
-            }
-            System.out.println(tagList.size());
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NoHeadException e) {
-            e.printStackTrace();
-        } catch (GitAPIException e) {
-            e.printStackTrace();
+            return new ArrayList<CommitInfo>();
         }
+    }
+
+    public static void main(String[] args) {
+        viewRepoWithCommits("root", "hehehe", "jihui_dev", 1, ".");
     }
 }

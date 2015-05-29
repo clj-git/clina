@@ -10,6 +10,11 @@
   [owner repository]
   (MockCore/initBareRepo owner repository))
 
+(defn list-commits
+  [owner repository revision page path]
+  (let [commits (into [] (java.util.ArrayList. (MockCore/viewRepoWithCommits owner repository revision page path)))]
+    commits))
+
 ;;revision -> branch or tag name
 (defn list-file
   ([request]

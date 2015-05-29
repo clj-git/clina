@@ -26,7 +26,12 @@
       (repo-viewer request view-repo))
     (GET "/tree/:revision/*"
          request
-      (repo-viewer request view-repo))
+      (do (println request)
+          (repo-viewer request view-repo)))
+    (comment
+      (GET "/commits/:revision"
+           request
+        (repo-viewer request view-repo-commits)))
     (GET "/tags"
          request
       (repo-viewer request view-repo-tags)))
