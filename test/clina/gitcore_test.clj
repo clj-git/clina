@@ -1,6 +1,7 @@
 (ns clina.gitcore-test
   (:require [clojure.test :refer :all]
-            [clina.util.git.cljgit :refer :all]))
+            [clina.util.git.cljgit :refer :all]
+            [clina.util.git.gitcore :refer :all]))
 
 (deftest init-bare-repo
   (testing "create bare repo"
@@ -20,3 +21,8 @@
     (let [commits (list-commits "root" "hehehe" "jihui_dev" "1" "hehe")]
       (doall
         (map println commits)))))
+
+(deftest repo-branchs
+  (testing "get repo branchs with info"
+    (let [branchs (apply with-repo-object (conj ["root" "hehehe"] get-repo-branches-withinfo))]
+      (println branchs))))

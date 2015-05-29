@@ -33,6 +33,9 @@
     (GET "/commits/:revision/*"
          request
       (repo-viewer request view-repo-commits))
+    (GET "/branches"
+         request
+      (repo-viewer request view-repo-branchs))
     (GET "/tags"
          request
       (repo-viewer request view-repo-tags)))

@@ -1,5 +1,6 @@
 (ns clina.util.git.gitcore
-  (:require [clina.models :refer :all])
+  (:require [clina.models :refer :all]
+            [clina.util.timeutil :refer :all])
   (:import (org.eclipse.jgit.api Git LogCommand)
            (org.eclipse.jgit.lib RepositoryBuilder Repository ObjectId Ref PersonIdent)
            (org.eclipse.jgit.api.errors NoHeadException)
@@ -42,6 +43,19 @@
     (map
       (fn [branch]
         (-> branch (.getName) (.replace "refs/heads/" ""))) branchlist)))
+
+(defn get-repo-branches-withinfo
+  [^Git git]
+  (map
+    (fn [branchname]
+         (let [repobranch (-> git (.getRepository) (.resolve branchname))
+               revcommit (-> git (.log) (.add repobranch) (.setMaxCount 1) (.call) (.iterator) (.next))
+               revcommitdate (-> revcommit (.getCommitterIdent) (.getWhen))
+               authorname (-> revcommit (.getCommitterIdent) (.getName))
+               interval (get-time-interval (get-unix-timestamp revcommitdate))]
+           {:name branchname
+            :interval interval
+            :authorname authorname})) (get-repo-branches git)))
 
 ;;id就是commithash
 (defn get-revcommit-from-id

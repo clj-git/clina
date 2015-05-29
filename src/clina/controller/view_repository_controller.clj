@@ -6,12 +6,14 @@
 
 (defn with-branchs-tags
   [request repoinfo]
-  (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches))
-        tags (apply with-repo-object (conj repoinfo get-repo-tags))
+  (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches-withinfo))
+        tags (reverse (apply with-repo-object (conj repoinfo get-repo-tags)))
         revision (get-in request [:params :revision])
-        revs (if (or (contains? (set branchs) revision) (nil? revision))
-               branchs
-               (map :name tags))]
+        branchnames (map :name branchs)
+        tagnames (map :name tags)
+        revs (if (or (contains? (set branchnames) revision) (nil? revision))
+               branchnames
+               tagnames)]
     {:branchs  branchs
      :tags     tags
      :revs     revs
@@ -29,25 +31,29 @@
     (if (zero? commitcount)
       (layout/render "emptyrepo")
       (layout/render pagename
-                     (assoc
-                       (merge result
-                              (merge-with #(if (nil? %1) %2 %1) repoinfomap {:revision "master"}))
-                       :branchcount (count (:branchs btinfo))
-                       :tagcount (count (:tags btinfo))
-                       :commitcount commitcount)))))
+                     (letfn [(get-default-revision [infomap]
+                                                   (merge-with #(if (nil? %1) %2 %1) infomap {:revision "master"}))]
+                       (assoc
+                         (merge
+                           (merge result
+                                  (get-default-revision repoinfomap))
+                           (get-default-revision btinfo))
+                         :branchcount (count (:branchs btinfo))
+                         :tagcount (count (:tags btinfo))
+                         :commitcount commitcount))))))
 
 (defn view-repo
   [request btinfo]
   (let [result (list-file request)]
-    (assoc result
-      :revs (:revs btinfo))))
+    result))
 
 (defn view-repo-commits
-  [request btinfo]
+  [request info]
   (let [commits (list-commits request)]
-    {:commits commits
-     :revs    (:revs btinfo)}))
+    {:commits commits}))
+
+(defn view-repo-branchs
+  [request info])
 
 (defn view-repo-tags
-  [request btinfo]
-  {:tags (reverse (:tags btinfo))})
+  [request info])

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1>Branches</h1>
+
+<ul>
+    {% for branch in branchs %}
+    <li><a href="/{{owner}}/{{repository}}/tree/{{branch.name}}">{{branch.name}} --- updated {{branch.interval}} by [{{branch.authorname}}]</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>
