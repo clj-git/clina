@@ -10,33 +10,39 @@
                       #(assoc %1 %2 (get-in request [:params %2])) {} [:owner :repository])
         repoinfo (vec (map #(get-in request [:params %]) [:owner :repository]))
         commitcount (apply with-repo-object (conj repoinfo get-repo-commit-count))
-        result (fn request repoinfo)
+        btinfo (with-branchs-tags request repoinfo)
+        result (fn request btinfo)
         pagename (get-fn-name fn)]
     (if (zero? commitcount)
       (layout/render "emptyrepo")
       (layout/render pagename
                      (merge result repoinfomap)))))
 
-(defn view-repo
+(defn with-branchs-tags
   [request repoinfo]
   (let [branchs (apply with-repo-object (conj repoinfo get-repo-branches))
         tags (apply with-repo-object (conj repoinfo get-repo-tags))
         revision (get-in request [:params :revision])
-        result (list-file request)]
-    (let [revs (if (or (contains? (set branchs) revision) (nil? revision))
-                 branchs
-                 (map :name tags))]
-      (assoc result
-        :revs revs
-        :tagcount (count tags)))))
+        revs (if (or (contains? (set branchs) revision) (nil? revision))
+               branchs
+               (map :name tags))]
+    {:branchs branchs
+     :tags tags
+     :revs revs}))
 
-(comment
-  (defn view-repo-commits
-    [request repoinfo]
-    (let [commits (list-commits)]
-      {:commits commits})))
+(defn view-repo
+  [request btinfo]
+  (let [result (list-file request)]
+    (assoc result
+      :revs (:revs btinfo)
+      :tagcount (count (:tags btinfo)))))
+
+(defn view-repo-commits
+  [request btinfo]
+  (let [commits (list-commits request)]
+    {:commits commits
+     :revs (:revs btinfo)}))
 
 (defn view-repo-tags
-  [request repoinfo]
-  (let [tags (apply with-repo-object (conj repoinfo get-repo-tags))]
-    {:tags (reverse tags)}))
+  [request btinfo]
+  {:tags (reverse (:tags btinfo))})

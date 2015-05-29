@@ -12,14 +12,23 @@
   (MockCore/initBareRepo owner repository))
 
 (defn list-commits
-  [owner repository revision page path]
-  (let [commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision page path))]
-    (reduce
-      (fn [commitlist commit]
-        (conj commitlist {:commitmsg  (.-description commit)
-                          :author     (.-authorName commit)
-                          :commithash (.-id commit)
-                          :interval   (get-time-interval (get-unix-timestamp (.-commitTime commit)))})) [] commits)))
+  ([request]
+   (let [keys [:owner :repository :revision :page :*]
+         params
+         (reduce
+           (fn [params key]
+             (assoc params key (get-in request [:params key]))) {} keys)
+         params-withdefault (merge-with #(if (nil? %1) %2 %1) params {:revision "master" :page "1" :* "."})]
+     (do (println params-withdefault)
+         (apply list-commits (map (fn [key] (key params-withdefault)) keys)))))
+  ([owner repository revision page path]
+   (let [commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision (Integer/parseInt page) path))]
+     (reduce
+       (fn [commitlist commit]
+         (conj commitlist {:commitmsg  (.-summary commit)
+                           :author     (.-authorName commit)
+                           :commithash (.-id commit)
+                           :interval   (get-time-interval (get-unix-timestamp (.-commitTime commit)))})) [] commits))))
 
 ;;revision -> branch or tag name
 (defn list-file

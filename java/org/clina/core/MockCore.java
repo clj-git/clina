@@ -511,7 +511,7 @@ public class MockCore {
                         public boolean include(RevWalk revWalk, RevCommit revCommit) throws StopWalkException, MissingObjectException, IncorrectObjectTypeException, IOException {
                             List<DiffInfo> diffInfos = getDiffs(git, revCommit.getName(), false).left;
                             for (DiffInfo info : diffInfos) {
-                                if (info.newPath.equals(path)) {
+                                if (info.newPath.startsWith(path)) {
                                     return true;
                                 }
                             }

@@ -5,6 +5,10 @@
     <title></title>
 </head>
 <body>
-
+<ul>
+    {% for commit in commits %}
+    <li>{{commit.commitmsg}}</li>
+    {% endfor %}
+</ul>
 </body>
 </html>
