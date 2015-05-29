@@ -1,5 +1,6 @@
 (ns clina.util.git.cljgit
-  (:require [clina.util.timeutil :refer :all])
+  (:require [clina.util.timeutil :refer :all]
+            [clina.util.serviceutil :refer :all])
   (:import (org.clina.core MockCore)))
 
 (defn delete-repo
@@ -12,8 +13,13 @@
 
 (defn list-commits
   [owner repository revision page path]
-  (let [commits (into [] (java.util.ArrayList. (MockCore/viewRepoWithCommits owner repository revision page path)))]
-    commits))
+  (let [commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision page path))]
+    (reduce
+      (fn [commitlist commit]
+        (conj commitlist {:commitmsg  (.-description commit)
+                          :author     (.-authorName commit)
+                          :commithash (.-id commit)
+                          :interval   (get-time-interval (get-unix-timestamp (.-commitTime commit)))})) [] commits)))
 
 ;;revision -> branch or tag name
 (defn list-file
@@ -29,8 +35,8 @@
    (list-file owner repository revision "."))
   ([owner repository revision path]
    (let [last-modified-commit (MockCore/getLastModifiedCommit owner repository revision path)
-         parent-paths (into [] (java.util.ArrayList. (MockCore/getParentPaths path)))
-         files (into [] (java.util.ArrayList. (MockCore/getRepoFiles owner repository revision path)))]
+         parent-paths (arraylist2vector (MockCore/getParentPaths path))
+         files (arraylist2vector (MockCore/getRepoFiles owner repository revision path))]
      {:last-modified-commit {:hash     (-> last-modified-commit (.getName))
                              :interval (get-time-interval (-> last-modified-commit (.getCommitTime)))
                              :author   (-> last-modified-commit (.getAuthorIdent) (.getName))}

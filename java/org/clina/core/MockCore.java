@@ -553,8 +553,4 @@ public class MockCore {
             return new ArrayList<CommitInfo>();
         }
     }
-
-    public static void main(String[] args) {
-        viewRepoWithCommits("root", "hehehe", "jihui_dev", 1, ".");
-    }
 }

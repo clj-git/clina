@@ -13,6 +13,6 @@
 
 (deftest repo-commits
   (testing "get repo commits"
-    (let [commits (list-commits "root" "hehehe" "jihui_dev" 1 ".")]
+    (let [commits (list-commits "root" "hehehe" "jihui_dev" 3 ".")]
       (doall
-        (map #(println (str (.-id %) (.-authorTime %) (.-commitTime %))) commits)))))
+        (map println commits)))))

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by zjh on 15-5-18.
  */
-//authorTime 和 commitTime貌似是一个东西额
+//authorTime-commitTime, authorName-committerName貌似都是一样的信息
 public class CommitInfo {
     //id 就是 commit hash
     public String id;

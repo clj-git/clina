@@ -16,3 +16,8 @@
 (defn get-fn-name
   [fn]
   (nth (str/split (str (type fn)) #"\$") 1))
+
+(defn arraylist2vector
+  "convert java.util.ArrayList -> vector"
+  [arraylist]
+  (into [] (java.util.ArrayList. arraylist)))
