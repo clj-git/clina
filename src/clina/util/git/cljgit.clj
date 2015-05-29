@@ -23,14 +23,19 @@
   ([owner repository revision page path]
    (let [intpage (Integer/parseInt page)
          commits (arraylist2vector (MockCore/viewRepoWithCommits owner repository revision intpage (if (= path ".") path (str path "/"))))]
-     {:commits (reduce
-                 (fn [commitlist commit]
-                   (conj commitlist {:commitmsg  (.-summary commit)
-                                     :author     (.-authorName commit)
-                                     :commithash (.-id commit)
-                                     :interval   (get-time-interval (get-unix-timestamp (.-commitTime commit)))})) [] commits)
-      :prev (dec intpage)
-      :next (inc intpage)})))
+     {:commits (map (fn [item]
+                      {:yearmonthday (nth item 0)
+                       :commits      (nth item 1)})
+                 (group-by :yearmonthday
+                           (reduce
+                             (fn [commitlist commit]
+                               (conj commitlist {:commitmsg    (.-summary commit)
+                                                 :author       (.-authorName commit)
+                                                 :commithash   (.-id commit)
+                                                 :interval     (get-time-interval (get-unix-timestamp (.-commitTime commit)))
+                                                 :yearmonthday (get-year-month-day (.-commitTime commit))})) [] commits)))
+      :prev    (dec intpage)
+      :next    (inc intpage)})))
 
 ;;revision -> branch or tag name
 (defn list-file

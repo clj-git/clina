@@ -1,10 +1,16 @@
-(ns clina.util.timeutil)
+(ns clina.util.timeutil
+  (:import (java.text SimpleDateFormat)))
 
 (defn unix-time-real
   "Taken from
   System/currentTimeMillis."
   []
   (long (/ (System/currentTimeMillis) 1000)))
+
+(defn get-year-month-day
+  "get year month day from java.util.Date"
+  [date]
+  (.format (SimpleDateFormat. "yyyy-MM-dd") date))
 
 (defn get-time-interval
   "如果超过一天就显示天数

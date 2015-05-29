@@ -16,8 +16,13 @@
         {% endfor %}
     </select>
 
-    {% for commit in commits %}
+    <br/>
+
+    {% for commitwithdate in commits %}
+    {{commitwithdate.yearmonthday}}
+    {% for commit in commitwithdate.commits %}
     <li>{{commit.commitmsg}} --- [{{commit.author}}] authored {{commit.interval}} --- {{commit.commithash}}</li>
+    {% endfor %}
     {% endfor %}
 </ul>
 
