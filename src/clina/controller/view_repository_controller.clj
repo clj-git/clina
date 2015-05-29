@@ -12,15 +12,15 @@
         revs (if (or (contains? (set branchs) revision) (nil? revision))
                branchs
                (map :name tags))]
-    {:branchs branchs
-     :tags tags
-     :revs revs
+    {:branchs  branchs
+     :tags     tags
+     :revs     revs
      :revision revision}))
 
 (defn repo-viewer
   [request fn]
   (let [repoinfomap (reduce
-                      #(assoc %1 %2 (get-in request [:params %2])) {} [:owner :repository])
+                      #(assoc %1 %2 (get-in request [:params %2])) {} [:owner :repository :revision])
         repoinfo (vec (map #(get-in request [:params %]) [:owner :repository]))
         commitcount (apply with-repo-object (conj repoinfo get-repo-commit-count))
         btinfo (with-branchs-tags request repoinfo)
@@ -29,21 +29,24 @@
     (if (zero? commitcount)
       (layout/render "emptyrepo")
       (layout/render pagename
-                     (merge result repoinfomap)))))
+                     (assoc
+                       (merge result
+                              (merge-with #(if (nil? %1) %2 %1) repoinfomap {:revision "master"}))
+                       :branchcount (count (:branchs btinfo))
+                       :tagcount (count (:tags btinfo))
+                       :commitcount commitcount)))))
 
 (defn view-repo
   [request btinfo]
   (let [result (list-file request)]
     (assoc result
-      :revs (:revs btinfo)
-      :tagcount (count (:tags btinfo)))))
+      :revs (:revs btinfo))))
 
 (defn view-repo-commits
   [request btinfo]
   (let [commits (list-commits request)]
     {:commits commits
-     :revs (:revs btinfo)
-     :currentrevision (:revision btinfo)}))
+     :revs    (:revs btinfo)}))
 
 (defn view-repo-tags
   [request btinfo]

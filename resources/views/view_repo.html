@@ -6,6 +6,8 @@
 </head>
 <body>
 
+<a href="/{{owner}}/{{repository}}/commits/{{revision}}">{{commitcount}} commits</a>
+
 <h3>{{last-modified-commit.author}} authored {{last-modified-commit.interval}}</h3>
 
 <a href="/{{owner}}/{{repository}}/tags">{{tagcount}} releases</a>
@@ -14,7 +16,7 @@
 
 <select onChange="window.location.href=this.value">
     {% for rev in revs %}
-        {% ifequal rev currentrevision %}
+        {% ifequal rev revision %}
             <option selected="selected" value ="/{{owner}}/{{repository}}/tree/{{rev}}">{{rev}}</option>
         {% else %}
             <option value ="/{{owner}}/{{repository}}/tree/{{rev}}">{{rev}}</option>

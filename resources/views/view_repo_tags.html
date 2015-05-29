@@ -5,6 +5,8 @@
     <title></title>
 </head>
 <body>
+<h1>Tags</h1>
+
 <ul>
     {% for tag in tags %}
     <li><a href="/{{owner}}/{{repository}}/tree/{{tag.name}}">{{tag.name}}</a></li>

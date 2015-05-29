@@ -54,7 +54,4 @@
                                     :message  (.-message file)
                                     :author   (.-author file)
                                     :interval (get-time-interval
-                                                (get-unix-timestamp (.time file)))}) files)
-      :currentrevision      (if (nil? revision)
-                              "master"
-                              revision)})))
+                                                (get-unix-timestamp (.time file)))}) files)})))
