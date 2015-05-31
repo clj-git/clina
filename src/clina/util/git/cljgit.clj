@@ -70,5 +70,7 @@
     (fn [index diff]
       {:index index
        :diff  {:oldcontent (.-oldContent diff)
-               :newcontent (.-newContent diff)}})
+               :newcontent (.-newContent diff)
+               :oldpath (.-oldPath diff)
+               :newpath (.-newPath diff)}})
     (arraylist2vector (MockCore/viewSpecificCommitDiffs commithash owner repository))))

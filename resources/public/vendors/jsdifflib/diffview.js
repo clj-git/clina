@@ -78,6 +78,16 @@ diffview = {
 			e.appendChild(document.createTextNode(text));
 			return e;
 		}
+
+		function addButton (e) {
+		    var b = document.createElement("b");
+		    b.appendChild(document.createTextNode("+"));
+		    b.style.display = "none";
+		    b.className = "add-comment";
+		    e.insertBefore(b, e.firstChild);
+		    e.style.position = "relative";
+		    return e;
+		}
 	
 		var tdata = document.createElement("thead");
 		var node = document.createElement("tr");
@@ -106,10 +116,13 @@ diffview = {
 		 * be returned.	 Otherwise, tidx is returned, and two empty cells are added
 		 * to the given row.
 		 */
-		function addCells (row, tidx, tend, textLines, change) {
+		function addCells (row, tidx, tend, textLines, change, thclass) {
+		    var tmp;
 			if (tidx < tend) {
-				row.appendChild(telt("th", (tidx + 1).toString()));
-				row.appendChild(ctelt("td", change, textLines[tidx].replace(/\t/g, "\u00a0\u00a0\u00a0\u00a0")));
+			    tmp = ctelt("th", thclass, "");
+			    tmp.setAttribute("line-number", (tidx + 1).toString());
+				row.appendChild(tmp);
+				row.appendChild(addButton(ctelt("td", change, textLines[tidx].replace(/\t/g, "\u00a0\u00a0\u00a0\u00a0"))));
 				return tidx + 1;
 			} else {
 				row.appendChild(document.createElement("th"));
@@ -119,9 +132,13 @@ diffview = {
 		}
 		
 		function addCellsInline (row, tidx, tidx2, textLines, change) {
-			row.appendChild(telt("th", tidx == null ? "" : (tidx + 1).toString()));
-			row.appendChild(telt("th", tidx2 == null ? "" : (tidx2 + 1).toString()));
-			row.appendChild(ctelt("td", change, textLines[tidx != null ? tidx : tidx2].replace(/\t/g, "\u00a0\u00a0\u00a0\u00a0")));
+		    var tmp = ctelt("th", "oldline", "");
+		    tmp.setAttribute("line-number", tidx == null ? "" : (tidx + 1).toString());
+			row.appendChild(tmp);
+			tmp = ctelt("th", "newline", "");
+			tmp.setAttribute("line-number", tidx2 == null ? "" : (tidx2 + 1).toString());
+			row.appendChild(tmp);
+			row.appendChild(addButton(ctelt("td", change, textLines[tidx != null ? tidx : tidx2].replace(/\t/g, "\u00a0\u00a0\u00a0\u00a0"))));
 		}
 		
 		for (var idx = 0; idx < opcodes.length; idx++) {
@@ -144,9 +161,9 @@ diffview = {
 						b += jump;
 						n += jump;
 						i += jump - 1;
-						node.appendChild(telt("th", "..."));
+						node.appendChild(ctelt("th", "skipline", ""));
 						if (!inline) node.appendChild(ctelt("td", "skip", ""));
-						node.appendChild(telt("th", "..."));
+						node.appendChild(ctelt("th", "skipline", ""));
 						node.appendChild(ctelt("td", "skip", ""));
 						
 						// skip last lines if they're all equal
@@ -173,8 +190,13 @@ diffview = {
 						addCellsInline(node, b++, n++, baseTextLines, change);
 					}
 				} else {
-					b = addCells(node, b, be, baseTextLines, change);
-					n = addCells(node, n, ne, newTextLines, change);
+				    var changeBase = change, changeNew = change;
+					if (change === "replace") {
+						if (b < be) changeBase = "delete";
+						if (n < ne) changeNew = "insert";
+					}
+					b = addCells(node, b, be, baseTextLines, changeBase, "oldline");
+					n = addCells(node, n, ne, newTextLines, changeNew, "newline");
 				}
 			}
 
@@ -188,11 +210,10 @@ diffview = {
 		node2.setAttribute("href", "http://github.com/cemerick/jsdifflib");
 		
 		tdata.push(node = document.createElement("tbody"));
-		for (var idx in rows) rows.hasOwnProperty(idx) && node.appendChild(rows[idx]);
+		for (var idx in rows) node.appendChild(rows[idx]);
 		
 		node = celt("table", "diff" + (inline ? " inlinediff" : ""));
-		for (var idx in tdata) tdata.hasOwnProperty(idx) && node.appendChild(tdata[idx]);
+		for (var idx in tdata) node.appendChild(tdata[idx]);
 		return node;
 	}
-};
-
+}

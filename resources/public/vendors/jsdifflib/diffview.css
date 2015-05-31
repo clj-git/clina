@@ -35,13 +35,23 @@ table.diff {
 table.diff tbody { 
 	font-family:Courier, monospace
 }
+table.diff tbody tr:hover {
+	background-color:#F8EEC7;
+}
+
+table.diff tbody tr:hover th {
+	background-color:#F6E8B5;
+}
+table.diff tbody tr:hover td {
+	background-color:#F6E8B5;
+}
 table.diff tbody th {
 	font-family:verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
-	background:#EED;
+	background-color:#FBFBFB;
 	font-size:11px;
 	font-weight:normal;
-	border:1px solid #BBC;
-	color:#886;
+	border-top:none; /* for overriding bootstrap */
+	color: rgba(0,0,0,0.3);;
 	padding:.3em .5em .1em 2em;
 	text-align:right;
 	vertical-align:top
@@ -58,6 +68,7 @@ table.diff tbody td {
 	padding:0px .4em;
 	padding-top:.4em;
 	vertical-align:top;
+	border-top: none;
 }
 table.diff .empty {
 	background-color:#DDD;
@@ -66,18 +77,40 @@ table.diff .replace {
 	background-color:#FD8
 }
 table.diff .delete {
-	background-color:#E99;
+	background-color:#ffecec;
 }
 table.diff .skip {
-	background-color:#EFEFEF;
-	border:1px solid #AAA;
-	border-right:1px solid #BBC;
+	background-color: #f8fafd;
+}
+table.diff th.skip {
+	background-color: #f0f5fa;
+}
+table.diff .skip:before {
+	content: " ";
 }
 table.diff .insert {
-	background-color:#9E9
+	background-color:#eaffea
 }
+table.diff th.insert {
+	background-color: #c1e9c1;
+	background-color: #dbffdb;
+}
+table.diff th.delete {
+	background-color: #ffdddd;
+	border-color: #f1c0c0;
+}
+
 table.diff th.author {
 	text-align:right;
 	border-top:1px solid #BBC;
 	background:#EFEFEF
+}
+
+table.diff ins{
+  background-color: #a6f3a6;
+  text-decoration: none;
+}
+table.diff del{
+  background-color: #f8cbcb;
+  text-decoration: none;
 }

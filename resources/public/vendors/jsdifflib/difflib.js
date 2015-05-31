@@ -28,9 +28,12 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 ***/
 /* Author: Chas Emerick <cemerick@snowtide.com> */
-var __whitespace = {" ":true, "\t":true, "\n":true, "\f":true, "\r":true};
+__whitespace = {" ":true, "\t":true, "\n":true, "\f":true, "\r":true};
+function __hasOwnProperty(obj, target){
+	return Object.prototype.hasOwnProperty.call(obj, target);
+}
 
-var difflib = {
+difflib = {
 	defaultJunkFunction: function (c) {
 		return __whitespace.hasOwnProperty(c);
 	},
@@ -93,7 +96,7 @@ var difflib = {
 	
 	// replacement for python's dict.get function -- need easy default values
 	__dictget: function (dict, key, defaultValue) {
-		return dict.hasOwnProperty(key) ? dict[key] : defaultValue;
+		return __hasOwnProperty(dict, key) ? dict[key] : defaultValue;
 	},	
 	
 	SequenceMatcher: function (a, b, isjunk) {
@@ -122,7 +125,7 @@ var difflib = {
 			var populardict = {};
 			for (var i = 0; i < b.length; i++) {
 				var elt = b[i];
-				if (b2j.hasOwnProperty(elt)) {
+				if (__hasOwnProperty(b2j, elt)) {
 					var indices = b2j[elt];
 					if (n >= 200 && indices.length * 100 > n) {
 						populardict[elt] = 1;
@@ -151,7 +154,7 @@ var difflib = {
 					}
 				}
 				for (var elt in b2j) {
-					if (b2j.hasOwnProperty(elt) && isjunk(elt)) {
+					if (__hasOwnProperty(b2j, elt) && isjunk(elt)) {
 						junkdict[elt] = 1;
 						delete b2j[elt];
 					}
@@ -171,7 +174,6 @@ var difflib = {
 			var bestj = blo;
 			var bestsize = 0;
 			var j = null;
-			var k;
 	
 			var j2len = {};
 			var nothing = [];
@@ -250,8 +252,7 @@ var difflib = {
 			
 			matching_blocks.sort(difflib.__ntuplecomp);
 	
-			var i1 = 0, j1 = 0, k1 = 0, block = 0;
-			var i2, j2, k2;
+			var i1 = j1 = k1 = block = 0;
 			var non_adjacent = [];
 			for (var idx in matching_blocks) {
 				if (matching_blocks.hasOwnProperty(idx)) {
@@ -337,7 +338,6 @@ var difflib = {
 			}
 	
 			var nn = n + n;
-			var group = [];
 			var groups = [];
 			for (var idx in codes) {
 				if (codes.hasOwnProperty(idx)) {
@@ -348,18 +348,16 @@ var difflib = {
 					j1 = code[3];
 					j2 = code[4];
 					if (tag == 'equal' && i2 - i1 > nn) {
-						group.push([tag, i1, Math.min(i2, i1 + n), j1, Math.min(j2, j1 + n)]);
-						groups.push(group);
-						group = [];
+						groups.push([tag, i1, Math.min(i2, i1 + n), j1, Math.min(j2, j1 + n)]);
 						i1 = Math.max(i1, i2-n);
 						j1 = Math.max(j1, j2-n);
 					}
 					
-					group.push([tag, i1, i2, j1, j2]);
+					groups.push([tag, i1, i2, j1, j2]);
 				}
 			}
 			
-			if (group && !(group.length == 1 && group[0][0] == 'equal')) groups.push(group)
+			if (groups && groups[groups.length - 1][0] == 'equal') groups.pop();
 			
 			return groups;
 		}
@@ -409,5 +407,4 @@ var difflib = {
 		this.a = this.b = null;
 		this.set_seqs(a, b);
 	}
-};
-
+}

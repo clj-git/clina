@@ -5,27 +5,13 @@
     <title></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-    <link rel="stylesheet" type="text/css" href="/css/diffview.css"/>
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/diffview.js"></script>
-    <script type="text/javascript" src="/js/difflib.js"></script>
-
-    <style type="text/css">
-        body {
-            font-size: 12px;
-            font-family: Sans-Serif;
-        }
-
-        label:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        h2 {
-            margin: 0.5em 0 0.1em;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/vendors/jsdifflib/diffview.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/clina.css"/>
+    <link rel="stylesheet" type="text/css" href="/vendors/google-code-prettify/prettify.css"/>
+    <script type="text/javascript" src="/vendors/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="/vendors/jquery/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="/vendors/jsdifflib/diffview.js"></script>
+    <script type="text/javascript" src="/vendors/jsdifflib/difflib.js"></script>
 
     <script type="text/javascript">
         $(function () {
@@ -35,7 +21,7 @@
             var url = "/" + new Array(owner, repository, "commit/diffcount", commithash).join("/");
             $.get(url, function (diffcount) {
                 for (i = 0; i < diffcount; i++) {
-                    diffUsingJS('oldText-' + i, 'newText-' + i, 'diffText-' + i);
+                    diffUsingJS('oldText-' + i, 'newText-' + i, 'diffText-' + i, 1, 0);
                 }
             });
         });
@@ -43,9 +29,9 @@
 </head>
 <body>
 
-<div id="owner">{{owner}}</div>
-<div id="repository">{{repository}}</div>
-<div id="commithash">{{commithash}}</div>
+<div id="owner" style="display: none;">{{owner}}</div>
+<div id="repository" style="display: none;">{{repository}}</div>
+<div id="commithash" style="display: none;">{{commithash}}</div>
 
 <select onChange="window.location.href=this.value">
     {% for branch in commitbranches %}
@@ -67,15 +53,18 @@
     {% endfor %}
 </select>
 
-<ul>
-    {% for diff in diffs %}
-    <li>
-        <div id="diffText-{{diff.index}}"></div>
-    </li>
-    <textarea id="oldText-{{diff.index}}" style="display: none;">{{diff.diff.oldcontent}}</textarea>
-    <textarea id="newText-{{diff.index}}" style="display: none;">{{diff.diff.newcontent}}</textarea>
-    {% endfor %}
-</ul>
+{% for diff in diffs %}
+<table class="table table-bordered diff-outside" commitId="{{commithash}}" fileName="{{diff.newpath}}"
+       data-diff-id="{{diff.index}}">
+    <tr>
+        <td style="padding: 0;">
+            <div id="diffText-{{diff.index}}"></div>
+            <textarea id="oldText-{{diff.index}}" style="display: none;">{{diff.diff.oldcontent}}</textarea>
+            <textarea id="newText-{{diff.index}}" style="display: none;">{{diff.diff.newcontent}}</textarea>
+        </td>
+    </tr>
+</table>
+{% endfor %}
 
 <script type="text/javascript" src="/js/clina.js"></script>
 </body>
