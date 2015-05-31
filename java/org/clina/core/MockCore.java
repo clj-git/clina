@@ -532,6 +532,52 @@ public class MockCore {
         return new Tuple<List<CommitInfo>, Boolean>(null, false);
     }
 
+    /**
+     * Returns the list of branch names of the specified commit.
+     */
+    public static void getBranchesOfCommit(File gitdir, String commitId) {
+        try {
+            Git git = Git.open(gitdir);
+            RevWalk revWalk = new RevWalk(git.getRepository());
+            RevCommit revCommit = revWalk.parseCommit(git.getRepository().resolve(commitId + "^0"));
+            List<String> branchnames = new ArrayList<String>();
+            for (Map.Entry<String, Ref> entry : git.getRepository().getAllRefs().entrySet()) {
+                if (entry.getKey().startsWith(Constants.R_HEADS) && revWalk.isMergedInto(revCommit, revWalk.parseCommit(entry.getValue().getObjectId()))) {
+                    branchnames.add(entry.getValue().getName().substring(Constants.R_HEADS.length()));
+                }
+            }
+
+            for (String branchname : branchnames) {
+                System.out.println(branchname);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Returns the list of tags of the specified commit.
+     */
+    public static void getTagsOfCommit(File gitdir, String commitId) {
+        try {
+            Git git = Git.open(gitdir);
+            RevWalk revWalk = new RevWalk(git.getRepository());
+            RevCommit revCommit = revWalk.parseCommit(git.getRepository().resolve(commitId + "^0"));
+            List<String> tagnames = new ArrayList<String>();
+            for (Map.Entry<String, Ref> entry : git.getRepository().getAllRefs().entrySet()) {
+                if (entry.getKey().startsWith(Constants.R_TAGS) && revWalk.isMergedInto(revCommit, revWalk.parseCommit(entry.getValue().getObjectId()))) {
+                    tagnames.add(entry.getValue().getName().substring(Constants.R_TAGS.length()));
+                }
+            }
+
+            for (String tagname : tagnames) {
+                System.out.println(tagname);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     //初始化一个裸repo用来进行给人clone push
     public static boolean initBareRepo(String owner, String repository) {
         return initRepository(getRepositoryDir(owner, repository), true);
@@ -551,6 +597,22 @@ public class MockCore {
         } catch (IOException e) {
             e.printStackTrace();
             return new ArrayList<CommitInfo>();
+        }
+    }
+
+    //id 就是 commit hash
+    //String id = "3fff559b37cb5a7fc9922209f0f90cb2b4702a0b";
+    public static List<DiffInfo> viewSpecificCommitInfo(String id, String owner, String repository) {
+        try {
+            Git git = Git.open(getRepositoryDir(owner, repository));
+            Tuple<List<DiffInfo>, String> diffs = getDiffs(git, id);
+            for (DiffInfo info : diffs.left) {
+                System.out.println(info);
+            }
+            return diffs.left;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<DiffInfo>();
         }
     }
 }

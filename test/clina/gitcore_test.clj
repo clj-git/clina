@@ -26,3 +26,8 @@
   (testing "get repo branches with info"
     (let [branches (apply with-repo-object (conj ["root" "hehehe"] get-repo-branches-withinfo))]
       (println branches))))
+
+(deftest commit-revisions
+  (testing "get branches of specific commit"
+    (let [branches (apply with-repo-object (conj ["root" "hehehe"] get-commit-branches "17fd66c156f508ab2cb8440af566029c8ba5cced"))]
+      (println branches))))

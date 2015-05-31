@@ -1,6 +1,7 @@
 (ns clina.util.git.gitcore
   (:require [clina.models :refer :all]
-            [clina.util.timeutil :refer :all])
+            [clina.util.timeutil :refer :all]
+            [clina.util.serviceutil :refer :all])
   (:import (org.eclipse.jgit.api Git LogCommand)
            (org.eclipse.jgit.lib RepositoryBuilder Repository ObjectId Ref PersonIdent)
            (org.eclipse.jgit.api.errors NoHeadException)
@@ -24,9 +25,9 @@
     (Git/open repo-dir)))
 
 (defn with-repo-object
-  [owner repository repo-operation]
+  [owner repository repo-operation & params]
   (let [git (get-repo-obj owner repository)]
-    (repo-operation git)))
+    (apply repo-operation (cons git params))))
 
 ;;在项目主页上显示提交次数
 (defn get-repo-commit-count
@@ -48,14 +49,14 @@
   [^Git git]
   (map
     (fn [branchname]
-         (let [repobranch (-> git (.getRepository) (.resolve branchname))
-               revcommit (-> git (.log) (.add repobranch) (.setMaxCount 1) (.call) (.iterator) (.next))
-               revcommitdate (-> revcommit (.getCommitterIdent) (.getWhen))
-               authorname (-> revcommit (.getCommitterIdent) (.getName))
-               interval (get-time-interval (get-unix-timestamp revcommitdate))]
-           {:name branchname
-            :interval interval
-            :authorname authorname})) (get-repo-branches git)))
+      (let [repobranch (-> git (.getRepository) (.resolve branchname))
+            revcommit (-> git (.log) (.add repobranch) (.setMaxCount 1) (.call) (.iterator) (.next))
+            revcommitdate (-> revcommit (.getCommitterIdent) (.getWhen))
+            authorname (-> revcommit (.getCommitterIdent) (.getName))
+            interval (get-time-interval (get-unix-timestamp revcommitdate))]
+        {:name       branchname
+         :interval   interval
+         :authorname authorname})) (get-repo-branches git)))
 
 ;;id就是commithash
 (defn get-revcommit-from-id
@@ -77,3 +78,38 @@
       (fn [ref]
         (let [revcommit (get-revcommit-from-id git (.getObjectId ref))]
           (->TagInfo (-> ref (.getName) (.replace "refs/tags/" "")) (-> revcommit (.getCommitterIdent) (.getWhen)) (.getName revcommit)))) taglist)))
+
+;;e.getValue.getName.substring(org.eclipse.jgit.lib.Constants.R_HEADS.length)
+
+
+;;branches tags
+(defn get-commit-revisions
+  [^Git git revision commitId]
+  (let [revwalk (-> git (.getRepository) (RevWalk.))
+        commit (.parseCommit revwalk (-> git (.getRepository) (.resolve (str commitId "^0"))))]
+    (map
+      (fn [obj]
+        (let [value (nth obj 0)]
+          (-> value (.substring (.length revision)))))
+      (filter
+        (fn [obj]
+          (let [key (nth obj 0)
+                value (nth obj 1)]
+            (and (.startsWith key revision)
+                 (-> revwalk (.isMergedInto commit
+                                            (-> revwalk (.parseCommit (-> value (.getObjectId)))))))))
+        (map2map (-> git (.getRepository) (.getAllRefs)))))))
+
+(comment
+  (filter
+    (fn [entry])
+    (-> git (.getRepository) (.getAllRefs) (.entry))))
+
+(defn get-commit-branches
+  "get branches of specific commit"
+  [^Git git commitId]
+  (get-commit-revisions git org.eclipse.jgit.lib.Constants/R_HEADS commitId))
+
+(defn getTagsOfCommit
+  "get tags of specific commit"
+  [])

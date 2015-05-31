@@ -21,3 +21,8 @@
   "convert java.util.ArrayList -> vector"
   [arraylist]
   (into [] (java.util.ArrayList. arraylist)))
+
+(defn map2map
+  "convert java.util.Map -> map"
+  [map]
+  (into {} map))
