@@ -14,7 +14,7 @@
         revs (if (or (contains? (set branchnames) revision) (nil? revision))
                branchnames
                tagnames)]
-    {:branches  branches
+    {:branches branches
      :tags     tags
      :revs     revs
      :revision revision}))

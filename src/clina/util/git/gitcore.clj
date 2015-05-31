@@ -79,9 +79,6 @@
         (let [revcommit (get-revcommit-from-id git (.getObjectId ref))]
           (->TagInfo (-> ref (.getName) (.replace "refs/tags/" "")) (-> revcommit (.getCommitterIdent) (.getWhen)) (.getName revcommit)))) taglist)))
 
-;;e.getValue.getName.substring(org.eclipse.jgit.lib.Constants.R_HEADS.length)
-
-
 ;;branches tags
 (defn get-commit-revisions
   [^Git git revision commitId]
@@ -100,16 +97,12 @@
                                             (-> revwalk (.parseCommit (-> value (.getObjectId)))))))))
         (map2map (-> git (.getRepository) (.getAllRefs)))))))
 
-(comment
-  (filter
-    (fn [entry])
-    (-> git (.getRepository) (.getAllRefs) (.entry))))
-
 (defn get-commit-branches
   "get branches of specific commit"
   [^Git git commitId]
   (get-commit-revisions git org.eclipse.jgit.lib.Constants/R_HEADS commitId))
 
-(defn getTagsOfCommit
+(defn get-commit-tags
   "get tags of specific commit"
-  [])
+  [^Git git commitId]
+  (reverse (get-commit-revisions git org.eclipse.jgit.lib.Constants/R_TAGS commitId)))
