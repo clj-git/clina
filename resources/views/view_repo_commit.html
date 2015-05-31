@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <link rel="stylesheet" type="text/css" href="/css/diffview.css"/>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
     <script type="text/javascript" src="/js/diffview.js"></script>
     <script type="text/javascript" src="/js/difflib.js"></script>
 
@@ -14,69 +15,37 @@
             font-size: 12px;
             font-family: Sans-Serif;
         }
-        h2 {
-            margin: 0.5em 0 0.1em;
-            text-align: center;
-        }
-        .top {
-            text-align: center;
-        }
-        .textInput {
-            display: block;
-            width: 49%;
-            float: left;
-        }
-        textarea {
-            width:100%;
-            height:300px;
-        }
+
         label:hover {
             text-decoration: underline;
             cursor: pointer;
         }
-        .spacer {
-            margin-left: 10px;
-        }
-        .viewType {
-            font-size: 16px;
-            clear: both;
+
+        h2 {
+            margin: 0.5em 0 0.1em;
             text-align: center;
-            padding: 1em;
-        }
-        #diffoutput {
-            width: 100%;
         }
     </style>
 
     <script type="text/javascript">
-
-        function diffUsingJS(viewType) {
-            "use strict";
-            var byId = function (id) { return document.getElementById(id); },
-                    base = difflib.stringAsLines(byId("baseText").value),
-                    newtxt = difflib.stringAsLines(byId("newText").value),
-                    sm = new difflib.SequenceMatcher(base, newtxt),
-                    opcodes = sm.get_opcodes(),
-                    diffoutputdiv = byId("diffoutput"),
-                    contextSize = byId("contextSize").value;
-
-            diffoutputdiv.innerHTML = "";
-            contextSize = contextSize || null;
-
-            diffoutputdiv.appendChild(diffview.buildView({
-                baseTextLines: base,
-                newTextLines: newtxt,
-                opcodes: opcodes,
-                baseTextName: "Base Text",
-                newTextName: "New Text",
-                contextSize: contextSize,
-                viewType: viewType
-            }));
-        }
-
+        $(function () {
+            var owner = $("#owner").text();
+            var repository = $("#repository").text();
+            var commithash = $("#commithash").text();
+            var url = "/" + new Array(owner, repository, "commit/diffcount", commithash).join("/");
+            $.get(url, function (diffcount) {
+                for (i = 0; i < diffcount; i++) {
+                    diffUsingJS('oldText-' + i, 'newText-' + i, 'diffText-' + i);
+                }
+            });
+        });
     </script>
 </head>
 <body>
+
+<div id="owner">{{owner}}</div>
+<div id="repository">{{repository}}</div>
+<div id="commithash">{{commithash}}</div>
 
 <select onChange="window.location.href=this.value">
     {% for branch in commitbranches %}
@@ -98,23 +67,16 @@
     {% endfor %}
 </select>
 
-<h1 class="top"><a href="http://github.com/cemerick/jsdifflib">jsdifflib</a> demo</h1>
-<div class="top">
-    <strong>Context size (optional):</strong> <input type="text" id="contextSize" value="" />
-</div>
-<div class="textInput">
-    <h2>Base Text</h2>
-    <textarea id="baseText"></textarea>
-</div>
-<div class="textInput spacer">
-    <h2>New Text</h2>
-    <textarea id="newText"></textarea>
-</div>
-<div class="viewType">
-    <input type="radio" name="_viewtype" id="sidebyside" onclick="diffUsingJS(0);" /> <label for="sidebyside">Side by Side Diff</label>
-    &nbsp; &nbsp;
-    <input type="radio" name="_viewtype" id="inline" onclick="diffUsingJS(1);" /> <label for="inline">Inline Diff</label>
-</div>
-<div id="diffoutput"> </div>
+<ul>
+    {% for diff in diffs %}
+    <li>
+        <div id="diffText-{{diff.index}}"></div>
+    </li>
+    <textarea id="oldText-{{diff.index}}" style="display: none;">{{diff.diff.oldcontent}}</textarea>
+    <textarea id="newText-{{diff.index}}" style="display: none;">{{diff.diff.newcontent}}</textarea>
+    {% endfor %}
+</ul>
+
+<script type="text/javascript" src="/js/clina.js"></script>
 </body>
 </html>

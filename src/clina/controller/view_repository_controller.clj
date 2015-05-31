@@ -65,6 +65,16 @@
         commithash (get-in request [:params :commithash])
         get-revisions (fn [callback] (apply with-repo-object (conj params callback commithash)))
         branches (get-revisions get-commit-branches)
-        tags (get-revisions get-commit-tags)]
+        tags (get-revisions get-commit-tags)
+        diffs (apply get-commit-diffs (conj params commithash))]
+    (println diffs)
     {:commitbranches branches
-     :committags     tags}))
+     :committags     tags
+     :commithash     commithash
+     :diffs          diffs}))
+
+(defn get-commit-diff-count
+  [request]
+  (let [params (map #(get-in request [:params %]) [:owner :repository :commithash])
+        diffs (apply get-commit-diffs params)]
+    (count diffs)))

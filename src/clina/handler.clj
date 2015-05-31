@@ -30,6 +30,9 @@
     (GET "/commit/:commithash"
          request
       (repo-viewer request view-repo-commit))
+    (GET "/commit/diffcount/:commithash"
+         request
+      (json (get-commit-diff-count request)))
     ;;http://localhost:3000/root/hehehe/commits/jihui_dev?page=3
     (GET "/commits/:revision"
          request
