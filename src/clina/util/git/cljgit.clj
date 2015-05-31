@@ -63,3 +63,7 @@
                                     :author   (.-author file)
                                     :interval (get-time-interval
                                                 (get-unix-timestamp (.time file)))}) files)})))
+
+(defn get-commit-diffs
+  [owner repository commithash]
+  (arraylist2vector (MockCore/viewSpecificCommitDiffs commithash owner repository)))

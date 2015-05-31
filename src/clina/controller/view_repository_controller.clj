@@ -4,6 +4,8 @@
             [clina.view.layout :as layout]
             [clina.util.serviceutil :refer :all]))
 
+(def git-repo-keys [:owner :repository])
+
 (defn with-branches-tags
   [request repoinfo]
   (let [branches (apply with-repo-object (conj repoinfo get-repo-branches-withinfo))
@@ -22,10 +24,10 @@
 (defn repo-viewer
   [request fn]
   (let [repoinfomap (reduce
-                      #(assoc %1 %2 (get-in request [:params %2])) {} [:owner :repository :revision])
-        repoinfo (vec (map #(get-in request [:params %]) [:owner :repository]))
+                      #(assoc %1 %2 (get-in request [:params %2])) {} git-repo-keys)
+        repoinfo (vec (map #(get-in request [:params %]) git-repo-keys))
         commitcount (apply with-repo-object (conj repoinfo get-repo-commit-count))
-        btinfo (with-branches-tags request repoinfo)
+        btinfo (merge repoinfomap (with-branches-tags request repoinfo))
         result (fn request btinfo)
         pagename (get-fn-name fn)]
     (if (zero? commitcount)
@@ -36,8 +38,7 @@
                        (assoc
                          (merge
                            (merge result
-                                  (get-default-revision repoinfomap))
-                           (get-default-revision btinfo))
+                                  (get-default-revision btinfo)))
                          :branchcount (count (:branches btinfo))
                          :tagcount (count (:tags btinfo))
                          :commitcount commitcount))))))
@@ -57,3 +58,13 @@
 
 (defn view-repo-tags
   [request info])
+
+(defn view-repo-commit
+  [request info]
+  (let [params (vec (map #(% info) git-repo-keys))
+        commithash (get-in request [:params :commithash])
+        get-revisions (fn [callback] (apply with-repo-object (conj params callback commithash)))
+        branches (get-revisions get-commit-branches)
+        tags (get-revisions get-commit-tags)]
+    {:commitbranches branches
+     :committags     tags}))

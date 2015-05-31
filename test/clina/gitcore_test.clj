@@ -34,3 +34,8 @@
   (testing "get tags of specific commit"
     (let [tags (apply with-repo-object (conj ["root" "hehehe"] get-commit-tags "17fd66c156f508ab2cb8440af566029c8ba5cced"))]
       (println tags))))
+
+(deftest commit-diffs
+  (testing "get diffs of specific commit"
+    (let [diffs (get-commit-diffs "root" "hehehe" "17fd66c156f508ab2cb8440af566029c8ba5cced")]
+      (println diffs))))

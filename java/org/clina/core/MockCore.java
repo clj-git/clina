@@ -602,13 +602,10 @@ public class MockCore {
 
     //id 就是 commit hash
     //String id = "3fff559b37cb5a7fc9922209f0f90cb2b4702a0b";
-    public static List<DiffInfo> viewSpecificCommitInfo(String id, String owner, String repository) {
+    public static List<DiffInfo> viewSpecificCommitDiffs(String id, String owner, String repository) {
         try {
             Git git = Git.open(getRepositoryDir(owner, repository));
             Tuple<List<DiffInfo>, String> diffs = getDiffs(git, id);
-            for (DiffInfo info : diffs.left) {
-                System.out.println(info);
-            }
             return diffs.left;
         } catch (IOException e) {
             e.printStackTrace();

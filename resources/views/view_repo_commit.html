@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<select onChange="window.location.href=this.value">
+    {% for branch in commitbranches %}
+    {% ifequal branch revision %}
+    <option selected="selected" value="/{{owner}}/{{repository}}/tree/{{branch}}">{{branch}}</option>
+    {% else %}
+    <option value="/{{owner}}/{{repository}}/tree/{{branch}}">{{branch}}</option>
+    {% endifequal %}
+    {% endfor %}
+</select>
+
+<select onChange="window.location.href=this.value">
+    {% for tag in committags %}
+    {% ifequal tag revision %}
+    <option selected="selected" value="/{{owner}}/{{repository}}/tree/{{tag}}">{{tag}}</option>
+    {% else %}
+    <option value="/{{owner}}/{{repository}}/tree/{{tag}}">{{tag}}</option>
+    {% endifequal %}
+    {% endfor %}
+</select>
+</body>
+</html>

@@ -27,6 +27,9 @@
     (GET "/tree/:revision/*"
          request
       (repo-viewer request view-repo))
+    (GET "/commit/:commithash"
+         request
+      (repo-viewer request view-repo-commit))
     ;;http://localhost:3000/root/hehehe/commits/jihui_dev?page=3
     (GET "/commits/:revision"
          request
