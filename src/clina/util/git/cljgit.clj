@@ -66,4 +66,8 @@
 
 (defn get-commit-diffs
   [owner repository commithash]
-  (arraylist2vector (MockCore/viewSpecificCommitDiffs commithash owner repository)))
+  (map
+    (fn [diff]
+      {:oldcontent (.-oldContent diff)
+       :newcontent (.-newContent diff)})
+    (arraylist2vector (MockCore/viewSpecificCommitDiffs commithash owner repository))))

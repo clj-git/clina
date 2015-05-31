@@ -37,5 +37,5 @@
 
 (deftest commit-diffs
   (testing "get diffs of specific commit"
-    (let [diffs (get-commit-diffs "root" "hehehe" "17fd66c156f508ab2cb8440af566029c8ba5cced")]
+    (let [diffs (get-commit-diffs "root" "hehehe" "c84b0e7c404e2ed791b5fa1f527a1c4886f62672")]
       (println diffs))))
