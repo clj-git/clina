@@ -21,7 +21,7 @@
     {% for commitwithdate in commits %}
     {{commitwithdate.yearmonthday}}
     {% for commit in commitwithdate.commits %}
-    <li>{{commit.commitmsg}} --- [{{commit.author}}] authored {{commit.interval}} --- {{commit.commithash}}</li>
+    <li><a href="/{{owner}}/{{repository}}/commit/{{commit.commithash}}">{{commit.commitmsg}} --- [{{commit.author}}] authored {{commit.interval}} --- {{commit.commithash}}</a></li>
     {% endfor %}
     {% endfor %}
 </ul>
