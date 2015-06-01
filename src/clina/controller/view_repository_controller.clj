@@ -22,14 +22,14 @@
      :revision revision}))
 
 (defn repo-viewer
-  [request fn]
+  [request func]
   (let [repoinfomap (reduce
                       #(assoc %1 %2 (get-in request [:params %2])) {} git-repo-keys)
         repoinfo (vec (map #(get-in request [:params %]) git-repo-keys))
         commitcount (apply with-repo-object (conj repoinfo get-repo-commit-count))
         btinfo (merge repoinfomap (with-branches-tags request repoinfo))
-        result (fn request btinfo)
-        pagename (get-fn-name fn)]
+        result (func request btinfo)
+        pagename (get-fn-name func)]
     (if (zero? commitcount)
       (layout/render "emptyrepo")
       (layout/render pagename
