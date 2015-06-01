@@ -5,11 +5,16 @@
     <title></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-    <link rel="stylesheet" type="text/css" href="/vendors/jsdifflib/diffview.css"/>
+    <link href="http://localhost:9000/assets/vendors/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="http://localhost:9000/assets/vendors/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="http://localhost:9000/assets/vendors/datepicker/css/datepicker.css" rel="stylesheet">
+    <link href="http://localhost:9000/assets/vendors/colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/clina.css"/>
     <link rel="stylesheet" type="text/css" href="/vendors/google-code-prettify/prettify.css"/>
     <script type="text/javascript" src="/vendors/google-code-prettify/prettify.js"></script>
     <script type="text/javascript" src="/vendors/jquery/jquery-1.11.1.js"></script>
+    <script src="http://localhost:9000/assets/vendors/bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="/vendors/jsdifflib/diffview.css"/>
     <script type="text/javascript" src="/vendors/jsdifflib/diffview.js"></script>
     <script type="text/javascript" src="/vendors/jsdifflib/difflib.js"></script>
 
@@ -53,18 +58,66 @@
     {% endfor %}
 </select>
 
-{% for diff in diffs %}
-<table class="table table-bordered diff-outside" commitId="{{commithash}}" fileName="{{diff.newpath}}"
-       data-diff-id="{{diff.index}}">
-    <tr>
-        <td style="padding: 0;">
-            <div id="diffText-{{diff.index}}"></div>
-            <textarea id="oldText-{{diff.index}}" style="display: none;">{{diff.diff.oldcontent}}</textarea>
-            <textarea id="newText-{{diff.index}}" style="display: none;">{{diff.diff.newcontent}}</textarea>
-        </td>
-    </tr>
-</table>
-{% endfor %}
+<div class="container body">
+    <div style="margin-right: 50px;">
+        {% for diff in diffs %}
+        <table class="table table-bordered diff-outside" commitId="{{commithash}}" fileName="{{diff.newpath}}"
+               data-diff-id="{{diff.index}}">
+            <tr>
+                <th style="font-weight: normal; line-height: 27px;" class="box-header">
+                    <!--@if(diff.changeType == ChangeType.COPY || diff.changeType == ChangeType.RENAME){
+                    @if(newCommitId.isDefined){
+                    <div class="pull-right align-right">
+                        <label class="checkbox" style="display: inline-block;"><input type="checkbox" class="ignore-whitespace" value="1"/>Ignore Space</label>
+                        <label class="checkbox" style="display: inline-block;"><input type="checkbox" class="toggle-notes" checked><span>Show notes</span></label>
+                        <a href="@url(repository)/blob/@newCommitId.get/@diff.newPath" class="btn btn-small" title="View the whole file at version @newCommitId.get.substring(0, 10)" data-toggle="tooltip">View</a>
+                    </div>
+                    }
+                  <span class="diffstat">
+                    <img src="@assets/common/images/diff_move.png"/>
+                  </span> @diff.oldPath -> @diff.newPath
+                    }
+                    @if(diff.changeType == ChangeType.ADD || diff.changeType == ChangeType.MODIFY){
+                    @if(newCommitId.isDefined){
+                    <div class="pull-right align-right">
+                        <label class="checkbox" style="display: inline-block;"><input type="checkbox" class="ignore-whitespace" value="1"/>Ignore Space</label>
+                        <label class="checkbox" style="display: inline-block;"><input type="checkbox" class="toggle-notes" checked><span>Show notes</span></label>
+                        <a href="@url(repository)/blob/@newCommitId.get/@diff.newPath" class="btn btn-small" title="View the whole file at version @newCommitId.get.substring(0, 10)" data-toggle="tooltip">View</a>
+                    </div>
+                    }
+                  <span class="diffstat">
+                  @if(diff.changeType == ChangeType.ADD){
+                    <img src="@assets/common/images/diff_add.png"/>
+                  }else{
+                    <img src="@assets/common/images/diff_edit.png"/>
+                  }
+                  </span>
+                    @diff.newPath
+                    }
+                    @if(diff.changeType == ChangeType.DELETE){
+                    @if(oldCommitId.isDefined){
+                    <div class="pull-right align-right">
+                        <label class="checkbox" style="display: inline-block;"><input type="checkbox" class="toggle-notes" checked><span>Show notes</span></label>
+                        <a href="@url(repository)/blob/@oldCommitId.get/@diff.oldPath" class="btn btn-small" title="View the whole file at version @oldCommitId.get.substring(0, 10)" data-toggle="tooltip">View</a>
+                    </div>
+                    }
+                  <span class="diffstat">
+                    <img src="@assets/common/images/diff_delete.png"/>
+                  </span> @diff.oldPath
+                    }-->
+                </th>
+            </tr>
+            <tr>
+                <td style="padding: 0;">
+                    <div id="diffText-{{diff.index}}"></div>
+                    <textarea id="oldText-{{diff.index}}" style="display: none;">{{diff.diff.oldcontent}}</textarea>
+                    <textarea id="newText-{{diff.index}}" style="display: none;">{{diff.diff.newcontent}}</textarea>
+                </td>
+            </tr>
+        </table>
+        {% endfor %}
+    </div>
+</div>
 
 <script type="text/javascript" src="/js/clina.js"></script>
 </body>
