@@ -1,6 +1,6 @@
 (defproject clina "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "yet another git host service"
+  :url "https://github.com/zjhmale/clina"
   :min-lein-version "2.0.0"
   :source-paths ["src"]
   :java-source-paths ["java"]

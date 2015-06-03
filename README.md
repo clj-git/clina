@@ -1,6 +1,6 @@
 ## clina
 
-yet another lightweight self git host server come from lisp world
+yet another lightweight git host service come from lisp world
 
 ## Running
 
