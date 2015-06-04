@@ -31,7 +31,8 @@ import java.util.*;
  */
 
 public class MockCore {
-    public static String basepath = String.format("%s/.gitbucket", System.getProperty("user.home"));
+    //public static String basepath = String.format("%s/.clina", System.getProperty("user.home"));
+    public static String basepath = System.getenv("CLINA_DATA");
 
     public static File getRepositoryDir(String owner, String repository) {
         String RepositoryHome = String.format("%s/repositories", basepath);
