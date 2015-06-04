@@ -15,7 +15,8 @@
                  [org.eclipse.jgit/org.eclipse.jgit.archive "3.4.1.201406201815-r"]
                  [org.eclipse.jgit/org.eclipse.jgit.http.server "3.4.1.201406201815-r"]
                  [com.googlecode.juniversalchardet/juniversalchardet "1.0.3"]
-                 [commons-io/commons-io "2.4"]]
+                 [commons-io/commons-io "2.4"]
+                 [bcrypt-clj "0.3.3"]]
   :plugins [[lein-ring "0.8.13"]]
   :ring {:handler clina.handler/app}
   :profiles
