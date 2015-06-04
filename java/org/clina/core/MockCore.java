@@ -34,6 +34,10 @@ public class MockCore {
     //public static String basepath = String.format("%s/.clina", System.getProperty("user.home"));
     public static String basepath = System.getenv("CLINA_DATA");
 
+    static {
+        FileUtil.createDir(basepath);
+    }
+
     public static File getRepositoryDir(String owner, String repository) {
         String RepositoryHome = String.format("%s/repositories", basepath);
 

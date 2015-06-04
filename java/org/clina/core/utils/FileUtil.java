@@ -41,6 +41,25 @@ public class FileUtil {
         }
     }
 
+    public static boolean createDir(String destDirName) {
+        File dir = new File(destDirName);
+        if (dir.exists()) {
+            System.out.println(String.format("create directory -> %s failed directory already exists", destDirName));
+            return false;
+        }
+        if (!destDirName.endsWith(File.separator)) {
+            destDirName = destDirName + File.separator;
+        }
+        //create directory
+        if (dir.mkdirs()) {
+            System.out.println(String.format("create directory -> %s done", destDirName));
+            return true;
+        } else {
+            System.out.println(String.format("create directory -> %s failed", destDirName));
+            return false;
+        }
+    }
+
     public static void delete(File file) throws IOException {
         if (file.isDirectory()) {
             if (file.list().length == 0) {
